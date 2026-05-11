@@ -6,12 +6,14 @@ public class BoxBehaviorProfile : ScriptableObject
     [Header("Physics")]
     public float gravityScale = 0f;
     public float linearDamping = 8f;
-
-    [Header("Push")]
     public float pushResistance = 2f;
     public float returnToRestSpeed = 0f;
 
     [Header("Skin Access")]
+    public bool shardCanStandOn = true;
+    public bool veilCanStandOn = true;
+
+    [Header("Push")]
     public bool shardCanPush = true;
     public bool veilCanPush = false;
 

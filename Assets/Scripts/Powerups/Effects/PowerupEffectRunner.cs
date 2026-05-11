@@ -14,6 +14,11 @@ public sealed class PowerupEffectRunner : MonoBehaviour
         if (runner == null)
             runner = owner.AddComponent<PowerupEffectRunner>();
 
+        // Register with effect tracker if available
+        EffectTracker tracker = owner.GetComponent<EffectTracker>();
+        if (tracker != null)
+            tracker.RegisterRunner(runner);
+
         runner.StartCoroutine(routine);
     }
 }

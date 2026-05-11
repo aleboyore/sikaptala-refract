@@ -11,6 +11,10 @@ public class PowerupDefinition : ScriptableObject
     public AudioClip shardSFX;
     public AudioClip veilSFX;
 
+    [Header("Visuals")]
+    public Sprite shardSprite;
+    public Sprite veilSprite;
+
     [Header("Pickup")]
     public bool consumeWhenEffectMissing = true;
 
@@ -22,5 +26,15 @@ public class PowerupDefinition : ScriptableObject
     public AudioClip GetSfx(PlayerSkinState state)
     {
         return state == PlayerSkinState.Shard ? shardSFX : veilSFX;
+    }
+
+    public Sprite GetSprite(PlayerSkinState state)
+    {
+        Sprite spriteFromDefinition = state == PlayerSkinState.Shard ? shardSprite : veilSprite;
+        if (spriteFromDefinition != null) return spriteFromDefinition;
+
+        // Fallback: try to get sprite from effect itself
+        PowerupEffect effect = GetEffect(state);
+        return effect != null ? effect.Sprite : null;
     }
 }

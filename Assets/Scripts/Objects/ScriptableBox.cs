@@ -47,6 +47,12 @@ public class ScriptableBox : MonoBehaviour
         rb.linearDamping = profile.linearDamping;
     }
 
+    public bool CanStandOnBy(PlayerSkinState skin)
+    {
+        if (profile == null) return true;
+        return skin == PlayerSkinState.Shard ? profile.shardCanStandOn : profile.veilCanStandOn;
+    }
+
     public bool CanBePushedBy(PlayerSkinState skin)
     {
         if (profile == null) return skin == PlayerSkinState.Shard;
@@ -107,7 +113,7 @@ public class ScriptableBox : MonoBehaviour
 
     /// <summary>
     /// Called by BoxPushHandler when player collides with this box.
-    /// Resolves state, applies contact effects, handles push/kill/pass-through.
+    /// Resolves state, checks stand-on, applies contact effects, handles push/kill.
     /// </summary>
     public void OnPlayerInteract(GameObject player, Vector2 pushDir)
     {
@@ -117,6 +123,9 @@ public class ScriptableBox : MonoBehaviour
         if (charState == null) return;
 
         PlayerSkinState skin = charState.current;
+
+        // Check if player can stand on this box at all
+        if (!CanStandOnBy(skin)) return;  // Player phases through
 
         // Kill-on-touch (no push involved)
         if (profile.killsOnTouch)

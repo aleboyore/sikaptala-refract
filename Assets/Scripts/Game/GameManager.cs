@@ -18,6 +18,10 @@ public class GameManager : MonoBehaviour
 	public void TriggerDeath()
 	{
 		if (_player == null) return;
+		
+		// Check if player can actually die (shields/invulnerability)
+		if (!_player.CanDie()) return;
+		
 		if (CheckpointManager.Instance == null) return;
 		_player.ResetToCheckpoint(CheckpointManager.Instance.PlayerPosition);
 	}

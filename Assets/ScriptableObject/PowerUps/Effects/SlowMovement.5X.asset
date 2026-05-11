@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4992aab6f8f1af84c81ca22237a3e46c, type: 3}
-  m_Name: SlowMovement.5
+  m_Name: SlowMovement.5X
   m_EditorClassIdentifier: Assembly-CSharp::SlowMovementEffect
   scaleMultiplier: 0.5
   duration: 5

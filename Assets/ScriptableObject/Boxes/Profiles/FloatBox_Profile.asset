@@ -10,14 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cc8dafa8a0b8a084dac273c2215d7249, type: 3}
-  m_Name: New Box Behavior Profile
+  m_Name: FloatBox_Profile
   m_EditorClassIdentifier: Assembly-CSharp::BoxBehaviorProfile
-  gravityScale: 0
-  linearDamping: 8
-  pushResistance: 2
+  gravityScale: 0.2
+  linearDamping: 2
+  pushResistance: 1
   returnToRestSpeed: 0
+  shardCanStandOn: 1
+  veilCanStandOn: 1
   shardCanPush: 1
-  veilCanPush: 0
+  veilCanPush: 1
   shardKillsOnPush: 0
   veilKillsOnPush: 0
   shardCanPassThrough: 0

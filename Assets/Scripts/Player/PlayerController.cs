@@ -25,6 +25,10 @@ public class PlayerController : MonoBehaviour
         protected int _dashesAllowed;
         protected int _dashesRemaining;
         protected float _dashSpeed = 20f;
+        protected float _jumpHeightMultiplier = 1f;
+        protected float _speedMultiplier = 1f;
+        protected bool _hasShield = false;
+        protected bool _isInvulnerable = false;
 
         [SerializeField] protected ScriptableStats _stats;
         CharacterState _characterState;
@@ -132,9 +136,10 @@ public class PlayerController : MonoBehaviour
                 if (!_grounded && Mathf.Abs(_rb.linearVelocity.y) < _apexThreshold)
                     apexBonus = _apexBonus * _frameInput.Move.x;
 
+                float maxSpeed = _frameInput.Move.x * _stats.MaxSpeed * _speedMultiplier + apexBonus;
                 _frameVelocity.x = Mathf.MoveTowards(
                     _frameVelocity.x,
-                    _frameInput.Move.x * _stats.MaxSpeed + apexBonus,
+                    maxSpeed,
                     _stats.Acceleration * Time.fixedDeltaTime);
             }
         }
@@ -164,7 +169,7 @@ public class PlayerController : MonoBehaviour
             _coyoteUsable = false;
             // ensure we are considered airborne immediately so gravity logic doesn't cancel the jump
             _grounded = false;
-            _frameVelocity.y = _stats.JumpPower; // P1 jumps positive Y (up)
+            _frameVelocity.y = _stats.JumpPower * _jumpHeightMultiplier; // P1 jumps positive Y (up)
             _characterState?.SetAnimBool("isJump", true);
             _characterState?.SetAnimBool("isFalling", false);
             RaiseJumped();
@@ -296,6 +301,10 @@ public class PlayerController : MonoBehaviour
             _frameVelocity = Vector2.zero;
             transform.position = position;
             _airJumpsRemaining = _airJumpsAllowed;
+            _jumpHeightMultiplier = 1f;
+            _speedMultiplier = 1f;
+            _hasShield = false;
+            _isInvulnerable = false;
         }
 
         public void SetAirJumpCount(int count)
@@ -317,6 +326,48 @@ public class PlayerController : MonoBehaviour
             if (_dashesRemaining <= 0) return false;
 
             _dashesRemaining--;
+            return true;
+        }
+
+        public void SetJumpHeightMultiplier(float multiplier)
+        {
+            _jumpHeightMultiplier = Mathf.Max(0.1f, multiplier);
+        }
+
+        public void SetSpeedMultiplier(float multiplier)
+        {
+            _speedMultiplier = Mathf.Max(0.1f, multiplier);
+        }
+
+        public void GrantShield()
+        {
+            _hasShield = true;
+        }
+
+        public void GrantInvulnerability(float duration)
+        {
+            _isInvulnerable = true;
+            PowerupEffectRunner.Run(gameObject, InvulnerabilityRoutine(duration));
+        }
+
+        private System.Collections.IEnumerator InvulnerabilityRoutine(float duration)
+        {
+            yield return new WaitForSeconds(duration);
+            _isInvulnerable = false;
+        }
+
+        public bool CanDie()
+        {
+            // Check invulnerability first
+            if (_isInvulnerable) return false;
+
+            // Check shield, consume it
+            if (_hasShield)
+            {
+                _hasShield = false;
+                return false;
+            }
+
             return true;
         }
 
