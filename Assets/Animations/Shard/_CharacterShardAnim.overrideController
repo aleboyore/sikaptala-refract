@@ -8,4 +8,12 @@ AnimatorOverrideController:
   m_PrefabAsset: {fileID: 0}
   m_Name: _CharacterShardAnim
   m_Controller: {fileID: 9100000, guid: 704d2f59a72e1e7449725ad93bc743d7, type: 2}
-  m_Clips: []
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 44b2ce08333a22e4c8d7131695c68417, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 44b2ce08333a22e4c8d7131695c68417, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: a43ea7034e265804e97dadd526b23e4a, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: a43ea7034e265804e97dadd526b23e4a, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 419f3fceb919c164c8fb7dc9ba44f120, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 419f3fceb919c164c8fb7dc9ba44f120, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 57c11c77afdeef64ea4fa50c5ca43937, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 57c11c77afdeef64ea4fa50c5ca43937, type: 2}

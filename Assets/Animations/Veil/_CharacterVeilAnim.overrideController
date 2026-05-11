@@ -8,4 +8,12 @@ AnimatorOverrideController:
   m_PrefabAsset: {fileID: 0}
   m_Name: _CharacterVeilAnim
   m_Controller: {fileID: 9100000, guid: 704d2f59a72e1e7449725ad93bc743d7, type: 2}
-  m_Clips: []
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 44b2ce08333a22e4c8d7131695c68417, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 983d89abe0ada7747bc2eb913dcf8ef3, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: a43ea7034e265804e97dadd526b23e4a, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 631f055598aa5dd4ea2d3598b15c5b58, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 419f3fceb919c164c8fb7dc9ba44f120, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 79965857abde27c41bb70a3b00ad5f45, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 57c11c77afdeef64ea4fa50c5ca43937, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 7490b9fa4e9bec74584950bf99998fd1, type: 2}
