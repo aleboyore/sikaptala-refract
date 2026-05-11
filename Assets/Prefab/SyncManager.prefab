@@ -63,6 +63,7 @@ MonoBehaviour:
   _p1: {fileID: 0}
   _p2: {fileID: 0}
   _feedback: {fileID: 1830721195418105470}
+  _syncChainVFX: {fileID: 0}
   _proximityThreshold: 8
   _syncCooldown: 2
   _syncLerpDuration: 0.35
