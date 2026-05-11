@@ -3,7 +3,9 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - Shard
+  - Veil
   layers:
   - Default
   - TransparentFX
@@ -13,13 +15,13 @@ TagManager:
   - UI
   - Player
   - Ground
-  - 
-  - 
+  - Shard
+  - Veil
   - Cam1
   - Cam2
-  - 
-  - 
-  - 
+  - LieObjects
+  - TruthObjects
+  - Shared
   - 
   - 
   - 

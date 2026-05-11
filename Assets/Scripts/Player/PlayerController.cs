@@ -3,11 +3,9 @@ using System.Collections;
 using System.Reflection;
 using UnityEngine;
 
-namespace TarodevController
+public class PlayerController : MonoBehaviour
 {
-    public class PlayerController : MonoBehaviour
-    {
-        // Protected state (made protected for MirrorController overrides)
+        // Protected state for gameplay logic
         protected Rigidbody2D _rb;
         protected CapsuleCollider2D _col;
         protected FrameInput _frameInput;
@@ -22,10 +20,14 @@ namespace TarodevController
         protected float _time;
         protected bool _cachedQueryStartInColliders;
         protected bool _isOnDoor;
+        protected int _airJumpsAllowed;
+        protected int _airJumpsRemaining;
+        protected int _dashesAllowed;
+        protected int _dashesRemaining;
+        protected float _dashSpeed = 20f;
 
         [SerializeField] protected ScriptableStats _stats;
-        [SerializeField] public Animator _animator;
-        [SerializeField] private DecoupleVFX _decoupleVFX;
+        CharacterState _characterState;
 
         [SerializeField] private float _apexThreshold = 2f;
         [SerializeField] private float _apexBonus = 2f;
@@ -52,7 +54,7 @@ namespace TarodevController
         {
             _rb = GetComponent<Rigidbody2D>();
             _col = GetComponent<CapsuleCollider2D>();
-            if (_animator == null) _animator = GetComponent<Animator>();
+            _characterState = GetComponent<CharacterState>();
             if (_rb) _rb.gravityScale = 0;
             _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
             GroundedChanged += OnGroundedChanged;
@@ -103,6 +105,7 @@ namespace TarodevController
                     _coyoteUsable = true;
                     _bufferedJumpUsable = true;
                     _endedJumpEarly = false;
+                    _airJumpsRemaining = _airJumpsAllowed;
                     RaiseGroundedChanged(true, Mathf.Abs(_frameVelocity.y));
                 }
             }
@@ -142,7 +145,14 @@ namespace TarodevController
                 _endedJumpEarly = true;
 
             if (!_jumpToConsume && !HasBufferedJump) return;
-            if (_grounded || CanUseCoyote) ExecuteJump();
+            if (_grounded || CanUseCoyote)
+            {
+                ExecuteJump();
+            }
+            else if (ConsumeAirJump())
+            {
+                ExecuteJump();
+            }
             _jumpToConsume = false;
         }
 
@@ -155,12 +165,17 @@ namespace TarodevController
             // ensure we are considered airborne immediately so gravity logic doesn't cancel the jump
             _grounded = false;
             _frameVelocity.y = _stats.JumpPower; // P1 jumps positive Y (up)
-            if (_animator)
-            {
-                _animator.SetBool("isJump", true);
-                _animator.SetBool("isFalling", false);
-            }
+            _characterState?.SetAnimBool("isJump", true);
+            _characterState?.SetAnimBool("isFalling", false);
             RaiseJumped();
+        }
+
+        protected bool ConsumeAirJump()
+        {
+            if (_airJumpsRemaining <= 0) return false;
+
+            _airJumpsRemaining--;
+            return true;
         }
 
         protected virtual void HandleGravity()
@@ -178,7 +193,7 @@ namespace TarodevController
                 _frameVelocity.y = Mathf.MoveTowards(
                     _frameVelocity.y, -_stats.MaxFallSpeed, inAirGravity * Time.fixedDeltaTime);
             }
-            if (_animator) _animator.SetBool("isFalling", !_grounded && _frameVelocity.y < 0f);
+            _characterState?.SetAnimBool("isFalling", !_grounded && _frameVelocity.y < 0f);
         }
 
         private void Update()
@@ -208,7 +223,7 @@ namespace TarodevController
             HandleDirection();
             HandleGravity();
             ApplyMovement();
-            if (_animator) _animator.SetBool("isRunning", Mathf.Abs(_frameInput.Move.x) > 0.01f);
+            _characterState?.SetAnimBool("isRunning", Mathf.Abs(_frameInput.Move.x) > 0.01f);
             HandleSpriteDirection();
         }
 
@@ -248,7 +263,15 @@ namespace TarodevController
             if (State == PlayerState.LockedIn) return;
             State = PlayerState.Frozen;
             if (_rb) _rb.constraints = RigidbodyConstraints2D.FreezeAll;
-            _decoupleVFX?.PlayFreeze(duration);
+            
+            // Animation idle gating: if grounded, show idle; else keep current animation
+            if (_grounded)
+            {
+                _characterState?.SetAnimBool("isRunning", false);
+                _characterState?.SetAnimBool("isJump", false);
+                _characterState?.SetAnimBool("isFalling", false);
+            }
+            
             StartCoroutine(FreezeRoutine(duration));
         }
 
@@ -257,7 +280,6 @@ namespace TarodevController
             yield return new WaitForSeconds(duration);
             State = PlayerState.Normal;
             if (_rb) _rb.constraints = RigidbodyConstraints2D.FreezeRotation;
-            _decoupleVFX?.PlayThaw();
         }
 
         public void EnterLockedInState()
@@ -272,8 +294,30 @@ namespace TarodevController
             if (_rb) _rb.constraints = RigidbodyConstraints2D.FreezeRotation;
             if (_rb) _rb.linearVelocity = Vector2.zero;
             _frameVelocity = Vector2.zero;
-            _decoupleVFX?.StopAll();
             transform.position = position;
+            _airJumpsRemaining = _airJumpsAllowed;
+        }
+
+        public void SetAirJumpCount(int count)
+        {
+            _airJumpsAllowed = Mathf.Max(0, count);
+            _airJumpsRemaining = _airJumpsAllowed;
+        }
+
+        public void SetDashCount(int count, float speed)
+        {
+            _dashesAllowed = Mathf.Max(0, count);
+            _dashesRemaining = _dashesAllowed;
+            _dashSpeed = speed;
+        }
+
+        public bool ConsumeDash(out float dashSpeed)
+        {
+            dashSpeed = _dashSpeed;
+            if (_dashesRemaining <= 0) return false;
+
+            _dashesRemaining--;
+            return true;
         }
 
         public void SnapToX(float worldX)
@@ -324,11 +368,11 @@ namespace TarodevController
 
         private void OnGroundedChanged(bool grounded, float yVel)
         {
-            if (! _animator) return;
+            if (_characterState == null) return;
             if (grounded)
             {
-                _animator.SetBool("isJump", false);
-                _animator.SetBool("isFalling", false);
+                _characterState.SetAnimBool("isJump", false);
+                _characterState.SetAnimBool("isFalling", false);
             }
         }
 
@@ -344,4 +388,3 @@ namespace TarodevController
                 _isOnDoor = false;
         }
     }
-}

@@ -25,24 +25,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Decouple",
-                    "type": "Button",
-                    "id": "64df8f09-c6a3-4bd8-8422-21c1e68ee22f",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Sync",
-                    "type": "Button",
-                    "id": "119e000e-5315-4cd1-ba1e-4710faf4eac6",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "LockIn",
                     "type": "Button",
                     "id": "e6f3a9fb-3793-4dae-a266-cf9c59948fcb",
@@ -52,9 +34,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "DecoupleAlt",
+                    "name": "Interact",
                     "type": "Button",
-                    "id": "ad47dd33-770d-4d9d-8b19-a293e675ded9",
+                    "id": "61390861-d658-4bb2-9c1b-07a694335370",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Swap",
+                    "type": "Button",
+                    "id": "1ddd6815-cfba-4a30-9f29-dcc6d556f526",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -141,28 +132,6 @@
                 },
                 {
                     "name": "",
-                    "id": "f3075e68-2384-404d-9301-75fad5e8d4f7",
-                    "path": "<Keyboard>/q",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Decouple",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "3f420982-c651-4f15-83e1-793be1f6ceaa",
-                    "path": "<Keyboard>/r",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Sync",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "f01e012a-23ab-4314-b815-a8b6cc5d550c",
                     "path": "<Keyboard>/w",
                     "interactions": "",
@@ -174,12 +143,23 @@
                 },
                 {
                     "name": "",
-                    "id": "cb11bc09-45c3-42e7-8275-e3903d751f81",
+                    "id": "e66d784c-0ecb-4bd2-95e7-e9bdfa5e5111",
                     "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "DecoupleAlt",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2a2f49e3-c0c1-4909-8d34-6fda51274ce2",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Swap",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

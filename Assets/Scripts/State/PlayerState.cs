@@ -1,11 +1,8 @@
-namespace TarodevController
+public enum PlayerState
 {
-    public enum PlayerState
-    {
-        Normal,
-        Frozen,
-        LockedIn,
-        Syncing,
-        Dead
-    }
+    Normal,
+    Frozen,
+    LockedIn,
+    Syncing,
+    Dead
 }
