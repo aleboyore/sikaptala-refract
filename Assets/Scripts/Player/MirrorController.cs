@@ -71,6 +71,11 @@ namespace TarodevController
 			// ensure airborne state so gravity logic doesn't cancel the jump
 			_grounded = false;
 			_frameVelocity.y = -_stats.JumpPower; // P2 jumps away from the ceiling
+			if (_animator)
+			{
+				_animator.SetBool("isJump", true);
+				_animator.SetBool("isFalling", false);
+			}
 			RaiseJumped();
 		}
 
@@ -98,6 +103,26 @@ namespace TarodevController
 
 				_frameVelocity.y = Mathf.MoveTowards(
 					_frameVelocity.y, _stats.MaxFallSpeed, inAirGravity * Time.fixedDeltaTime);
+			}
+
+			if (_animator) _animator.SetBool("isFalling", !_grounded && _frameVelocity.y > 0f);
+		}
+
+		protected override void HandleSpriteDirection()
+		{
+			if (_frameInput.Move.x > 0.01f)
+			{
+				// Moving right - flip for P2
+				var scale = transform.localScale;
+				scale.x = -1f;
+				transform.localScale = scale;
+			}
+			else if (_frameInput.Move.x < -0.01f)
+			{
+				// Moving left - no flip for P2
+				var scale = transform.localScale;
+				scale.x = 1f;
+				transform.localScale = scale;
 			}
 		}
 	}

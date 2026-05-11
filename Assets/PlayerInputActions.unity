@@ -447,42 +447,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1996835114921375712, guid: 323c4d5f5bd366545b74527628d4b76d, type: 3}
-      propertyPath: m_Name
-      value: Camera_Shard
-      objectReference: {fileID: 0}
-    - target: {fileID: 1996835114921375712, guid: 323c4d5f5bd366545b74527628d4b76d, type: 3}
-      propertyPath: m_Layer
-      value: 11
-      objectReference: {fileID: 0}
-    - target: {fileID: 2356053420531844315, guid: 323c4d5f5bd366545b74527628d4b76d, type: 3}
-      propertyPath: orthographic size
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 2356053420531844315, guid: 323c4d5f5bd366545b74527628d4b76d, type: 3}
-      propertyPath: m_NormalizedViewPortRect.height
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2806023789509613722, guid: 323c4d5f5bd366545b74527628d4b76d, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4313082869088597042, guid: 323c4d5f5bd366545b74527628d4b76d, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4313082869088597042, guid: 323c4d5f5bd366545b74527628d4b76d, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4313082869088597042, guid: 323c4d5f5bd366545b74527628d4b76d, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4313082869088597042, guid: 323c4d5f5bd366545b74527628d4b76d, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6026208757792034084, guid: 323c4d5f5bd366545b74527628d4b76d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -523,14 +487,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6980068101211474024, guid: 323c4d5f5bd366545b74527628d4b76d, type: 3}
-      propertyPath: m_Name
-      value: CameraTargetShard
-      objectReference: {fileID: 0}
-    - target: {fileID: 7369149357780391855, guid: 323c4d5f5bd366545b74527628d4b76d, type: 3}
-      propertyPath: ChannelMask
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 9211799820994990070, guid: 323c4d5f5bd366545b74527628d4b76d, type: 3}
       propertyPath: m_Name
       value: ShardCharacter
@@ -548,49 +504,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 70319450655623081, guid: 94c4437c0bdf98149ba96246577cd4ad, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 70319450655623081, guid: 94c4437c0bdf98149ba96246577cd4ad, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 70319450655623081, guid: 94c4437c0bdf98149ba96246577cd4ad, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 70319450655623081, guid: 94c4437c0bdf98149ba96246577cd4ad, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 70319450655623081, guid: 94c4437c0bdf98149ba96246577cd4ad, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 241106867508321618, guid: 94c4437c0bdf98149ba96246577cd4ad, type: 3}
       propertyPath: m_Name
       value: VeilCharacter
       objectReference: {fileID: 0}
-    - target: {fileID: 1729440731326685912, guid: 94c4437c0bdf98149ba96246577cd4ad, type: 3}
-      propertyPath: m_Name
-      value: CameraTargetVeil
-      objectReference: {fileID: 0}
-    - target: {fileID: 4027961607250347861, guid: 94c4437c0bdf98149ba96246577cd4ad, type: 3}
-      propertyPath: m_Name
-      value: Camera_Veil
-      objectReference: {fileID: 0}
-    - target: {fileID: 4027961607250347861, guid: 94c4437c0bdf98149ba96246577cd4ad, type: 3}
-      propertyPath: m_Layer
-      value: 10
-      objectReference: {fileID: 0}
     - target: {fileID: 5984827582940462300, guid: 94c4437c0bdf98149ba96246577cd4ad, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5984827582940462300, guid: 94c4437c0bdf98149ba96246577cd4ad, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 36.9
+      value: 34
       objectReference: {fileID: 0}
     - target: {fileID: 5984827582940462300, guid: 94c4437c0bdf98149ba96246577cd4ad, type: 3}
       propertyPath: m_LocalPosition.z
@@ -623,26 +547,6 @@ PrefabInstance:
     - target: {fileID: 5984827582940462300, guid: 94c4437c0bdf98149ba96246577cd4ad, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 180
-      objectReference: {fileID: 0}
-    - target: {fileID: 6180921478852496375, guid: 94c4437c0bdf98149ba96246577cd4ad, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6846910182647692959, guid: 94c4437c0bdf98149ba96246577cd4ad, type: 3}
-      propertyPath: ChannelMask
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 8344232678660940138, guid: 94c4437c0bdf98149ba96246577cd4ad, type: 3}
-      propertyPath: orthographic size
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 8344232678660940138, guid: 94c4437c0bdf98149ba96246577cd4ad, type: 3}
-      propertyPath: m_NormalizedViewPortRect.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8344232678660940138, guid: 94c4437c0bdf98149ba96246577cd4ad, type: 3}
-      propertyPath: m_NormalizedViewPortRect.height
-      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Reflection;
 using UnityEngine;
 
 namespace TarodevController
@@ -22,6 +23,7 @@ namespace TarodevController
         protected bool _isOnDoor;
 
         [SerializeField] protected ScriptableStats _stats;
+        [SerializeField] public Animator _animator;
 
         [SerializeField] private float _apexThreshold = 2f;
         [SerializeField] private float _apexBonus = 2f;
@@ -48,13 +50,16 @@ namespace TarodevController
         {
             _rb = GetComponent<Rigidbody2D>();
             _col = GetComponent<CapsuleCollider2D>();
+            if (_animator == null) _animator = GetComponent<Animator>();
             if (_rb) _rb.gravityScale = 0;
             _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
+            GroundedChanged += OnGroundedChanged;
         }
 
         private void OnDestroy()
         {
             Physics2D.queriesStartInColliders = _cachedQueryStartInColliders;
+            GroundedChanged -= OnGroundedChanged;
         }
 
         protected virtual void GatherInput()
@@ -145,6 +150,11 @@ namespace TarodevController
             // ensure we are considered airborne immediately so gravity logic doesn't cancel the jump
             _grounded = false;
             _frameVelocity.y = _stats.JumpPower; // P1 jumps positive Y (up)
+            if (_animator)
+            {
+                _animator.SetBool("isJump", true);
+                _animator.SetBool("isFalling", false);
+            }
             RaiseJumped();
         }
 
@@ -163,6 +173,7 @@ namespace TarodevController
                 _frameVelocity.y = Mathf.MoveTowards(
                     _frameVelocity.y, -_stats.MaxFallSpeed, inAirGravity * Time.fixedDeltaTime);
             }
+            if (_animator) _animator.SetBool("isFalling", !_grounded && _frameVelocity.y < 0f);
         }
 
         private void Update()
@@ -192,6 +203,26 @@ namespace TarodevController
             HandleDirection();
             HandleGravity();
             ApplyMovement();
+            if (_animator) _animator.SetBool("isRunning", Mathf.Abs(_frameInput.Move.x) > 0.01f);
+            HandleSpriteDirection();
+        }
+
+        protected virtual void HandleSpriteDirection()
+        {
+            if (_frameInput.Move.x > 0.01f)
+            {
+                // Moving right - no flip
+                var scale = transform.localScale;
+                scale.x = 1f;
+                transform.localScale = scale;
+            }
+            else if (_frameInput.Move.x < -0.01f)
+            {
+                // Moving left - flip
+                var scale = transform.localScale;
+                scale.x = -1f;
+                transform.localScale = scale;
+            }
         }
 
         protected void ApplyMovement()
@@ -241,6 +272,16 @@ namespace TarodevController
             _frameVelocity.x = 0f;
             if (_rb != null) _rb.linearVelocity = new Vector2(0f, _rb.linearVelocity.y);
             transform.position = new Vector3(worldX, transform.position.y, transform.position.z);
+        }
+
+        private void OnGroundedChanged(bool grounded, float yVel)
+        {
+            if (! _animator) return;
+            if (grounded)
+            {
+                _animator.SetBool("isJump", false);
+                _animator.SetBool("isFalling", false);
+            }
         }
 
         protected virtual void OnTriggerEnter2D(Collider2D other)
