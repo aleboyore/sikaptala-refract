@@ -136,6 +136,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DecoupleAlt"",
+                    ""type"": ""Button"",
+                    ""id"": ""ad47dd33-770d-4d9d-8b19-a293e675ded9"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -207,19 +216,19 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""f3075e68-2384-404d-9301-75fad5e8d4f7"",
-                    ""path"": ""<Keyboard>/shift"",
+                    ""id"": ""c3eb82ed-2722-48ba-936c-35467842a9cd"",
+                    ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Decouple"",
+                    ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""939eca96-6681-427e-8b17-227b51aabfda"",
-                    ""path"": ""<Keyboard>/leftShift"",
+                    ""id"": ""f3075e68-2384-404d-9301-75fad5e8d4f7"",
+                    ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -248,6 +257,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""LockIn"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cb11bc09-45c3-42e7-8275-e3903d751f81"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DecoupleAlt"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -267,6 +287,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Gameplay_Decouple = m_Gameplay.FindAction("Decouple", throwIfNotFound: true);
         m_Gameplay_Sync = m_Gameplay.FindAction("Sync", throwIfNotFound: true);
         m_Gameplay_LockIn = m_Gameplay.FindAction("LockIn", throwIfNotFound: true);
+        m_Gameplay_DecoupleAlt = m_Gameplay.FindAction("DecoupleAlt", throwIfNotFound: true);
     }
 
     ~@PlayerInputActions()
@@ -352,6 +373,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Decouple;
     private readonly InputAction m_Gameplay_Sync;
     private readonly InputAction m_Gameplay_LockIn;
+    private readonly InputAction m_Gameplay_DecoupleAlt;
     /// <summary>
     /// Provides access to input actions defined in input action map "Gameplay".
     /// </summary>
@@ -383,6 +405,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Gameplay/LockIn".
         /// </summary>
         public InputAction @LockIn => m_Wrapper.m_Gameplay_LockIn;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/DecoupleAlt".
+        /// </summary>
+        public InputAction @DecoupleAlt => m_Wrapper.m_Gameplay_DecoupleAlt;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -424,6 +450,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @LockIn.started += instance.OnLockIn;
             @LockIn.performed += instance.OnLockIn;
             @LockIn.canceled += instance.OnLockIn;
+            @DecoupleAlt.started += instance.OnDecoupleAlt;
+            @DecoupleAlt.performed += instance.OnDecoupleAlt;
+            @DecoupleAlt.canceled += instance.OnDecoupleAlt;
         }
 
         /// <summary>
@@ -450,6 +479,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @LockIn.started -= instance.OnLockIn;
             @LockIn.performed -= instance.OnLockIn;
             @LockIn.canceled -= instance.OnLockIn;
+            @DecoupleAlt.started -= instance.OnDecoupleAlt;
+            @DecoupleAlt.performed -= instance.OnDecoupleAlt;
+            @DecoupleAlt.canceled -= instance.OnDecoupleAlt;
         }
 
         /// <summary>
@@ -538,5 +570,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnLockIn(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "DecoupleAlt" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDecoupleAlt(InputAction.CallbackContext context);
     }
 }

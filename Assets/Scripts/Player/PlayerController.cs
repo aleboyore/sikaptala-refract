@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Reflection;
 using UnityEngine;
@@ -24,6 +25,7 @@ namespace TarodevController
 
         [SerializeField] protected ScriptableStats _stats;
         [SerializeField] public Animator _animator;
+        [SerializeField] private DecoupleVFX _decoupleVFX;
 
         [SerializeField] private float _apexThreshold = 2f;
         [SerializeField] private float _apexBonus = 2f;
@@ -64,6 +66,9 @@ namespace TarodevController
 
         protected virtual void GatherInput()
         {
+            if (State != PlayerState.Normal)
+                return;
+
             if (InputHandler.Instance != null)
                 _frameInput = InputHandler.Instance.P1Input;
 
@@ -236,12 +241,14 @@ namespace TarodevController
 
         public bool CanUseCoyote => _coyoteUsable && (_time - _frameLeftGrounded) <= _stats.CoyoteTime;
         public bool HasBufferedJump => _bufferedJumpUsable && (_time - _timeJumpWasPressed) <= _stats.JumpBuffer;
+        public bool IsGrounded => _grounded;
 
         public void EnterFrozenState(float duration)
         {
             if (State == PlayerState.LockedIn) return;
             State = PlayerState.Frozen;
             if (_rb) _rb.constraints = RigidbodyConstraints2D.FreezeAll;
+            _decoupleVFX?.PlayFreeze(duration);
             StartCoroutine(FreezeRoutine(duration));
         }
 
@@ -250,6 +257,7 @@ namespace TarodevController
             yield return new WaitForSeconds(duration);
             State = PlayerState.Normal;
             if (_rb) _rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+            _decoupleVFX?.PlayThaw();
         }
 
         public void EnterLockedInState()
@@ -264,6 +272,7 @@ namespace TarodevController
             if (_rb) _rb.constraints = RigidbodyConstraints2D.FreezeRotation;
             if (_rb) _rb.linearVelocity = Vector2.zero;
             _frameVelocity = Vector2.zero;
+            _decoupleVFX?.StopAll();
             transform.position = position;
         }
 
@@ -272,6 +281,45 @@ namespace TarodevController
             _frameVelocity.x = 0f;
             if (_rb != null) _rb.linearVelocity = new Vector2(0f, _rb.linearVelocity.y);
             transform.position = new Vector3(worldX, transform.position.y, transform.position.z);
+        }
+
+        public void LerpToX(float worldX, float duration, Action onComplete = null)
+        {
+            StartCoroutine(LerpToXRoutine(worldX, duration, onComplete));
+        }
+
+        private IEnumerator LerpToXRoutine(float worldX, float duration, Action onComplete)
+        {
+            State = PlayerState.Syncing;
+            if (_rb) _rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
+            if (_rb) _rb.linearVelocity = Vector2.zero;
+            _frameVelocity = Vector2.zero;
+
+            float startX = transform.position.x;
+            float elapsed = 0f;
+
+            while (elapsed < duration)
+            {
+                elapsed += Time.deltaTime;
+                float t = duration <= 0f ? 1f : Mathf.Clamp01(elapsed / duration);
+                float currentX = Mathf.Lerp(startX, worldX, EaseInOutCubic(t));
+                transform.position = new Vector3(currentX, transform.position.y, transform.position.z);
+                yield return null;
+            }
+
+            transform.position = new Vector3(worldX, transform.position.y, transform.position.z);
+            _frameVelocity.x = 0f;
+            if (_rb) _rb.linearVelocity = new Vector2(0f, _rb.linearVelocity.y);
+            if (_rb) _rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+            State = PlayerState.Normal;
+            onComplete?.Invoke();
+        }
+
+        private float EaseInOutCubic(float t)
+        {
+            return t < 0.5f
+                ? 4f * t * t * t
+                : 1f - Mathf.Pow(-2f * t + 2f, 3f) / 2f;
         }
 
         private void OnGroundedChanged(bool grounded, float yVel)

@@ -5,6 +5,7 @@ namespace TarodevController
         Normal,
         Frozen,
         LockedIn,
+        Syncing,
         Dead
     }
 }

@@ -50,6 +50,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "DecoupleAlt",
+                    "type": "Button",
+                    "id": "ad47dd33-770d-4d9d-8b19-a293e675ded9",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -121,19 +130,19 @@
                 },
                 {
                     "name": "",
-                    "id": "f3075e68-2384-404d-9301-75fad5e8d4f7",
-                    "path": "<Keyboard>/shift",
+                    "id": "c3eb82ed-2722-48ba-936c-35467842a9cd",
+                    "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Decouple",
+                    "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "939eca96-6681-427e-8b17-227b51aabfda",
-                    "path": "<Keyboard>/leftShift",
+                    "id": "f3075e68-2384-404d-9301-75fad5e8d4f7",
+                    "path": "<Keyboard>/q",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -160,6 +169,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "LockIn",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cb11bc09-45c3-42e7-8275-e3903d751f81",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DecoupleAlt",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

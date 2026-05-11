@@ -12,5 +12,6 @@ public class CheckpointManager : MonoBehaviour
 	{
 		P1Position = p1Pos;
 		P2Position = p2Pos;
+		DecoupleManager.Instance?.RestoreCharges();
 	}
 }

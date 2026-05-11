@@ -23,37 +23,63 @@ public class SyncFeedback : MonoBehaviour
     [SerializeField] private AudioClip _failureClip;
     [SerializeField] private AudioClip _successClip;
 
+    private Color _p1OriginalColor;
+    private Color _p2OriginalColor;
+    private Coroutine _flashRoutine;
+    private Coroutine _shakeRoutine;
+
+    private void Awake()
+    {
+        if (_p1Sprite != null) _p1OriginalColor = _p1Sprite.color;
+        if (_p2Sprite != null) _p2OriginalColor = _p2Sprite.color;
+    }
+
     public void PlayFailure()
     {
-        StopAllCoroutines();
-        StartCoroutine(FlashSprites(_failureColor, _flashCount));
-        StartCoroutine(ShakeCamera());
+        StopFeedbackRoutines();
+        _flashRoutine = StartCoroutine(FlashSprites(_failureColor, _flashCount));
+        _shakeRoutine = StartCoroutine(ShakeCamera());
         if (_failureClip && _audioSource) _audioSource.PlayOneShot(_failureClip);
     }
 
     public void PlaySuccess()
     {
-        StopAllCoroutines();
-        StartCoroutine(FlashSprites(_successColor, 1));
+        StopFeedbackRoutines();
+        _flashRoutine = StartCoroutine(FlashSprites(_successColor, 1));
         if (_successClip && _audioSource) _audioSource.PlayOneShot(_successClip);
+    }
+
+    private void StopFeedbackRoutines()
+    {
+        if (_flashRoutine != null)
+        {
+            StopCoroutine(_flashRoutine);
+            _flashRoutine = null;
+        }
+
+        if (_shakeRoutine != null)
+        {
+            StopCoroutine(_shakeRoutine);
+            _shakeRoutine = null;
+        }
+
+        RestoreOriginalColors();
     }
 
     private IEnumerator FlashSprites(Color flashColor, int count)
     {
         if (_p1Sprite == null || _p2Sprite == null) yield break;
 
-        Color p1Original = _p1Sprite.color;
-        Color p2Original = _p2Sprite.color;
-
         for (int i = 0; i < count; i++)
         {
             _p1Sprite.color = flashColor;
             _p2Sprite.color = flashColor;
             yield return new WaitForSeconds(_flashDuration);
-            _p1Sprite.color = p1Original;
-            _p2Sprite.color = p2Original;
+            RestoreOriginalColors();
             yield return new WaitForSeconds(_flashDuration);
         }
+
+        RestoreOriginalColors();
     }
 
     private IEnumerator ShakeCamera()
@@ -73,5 +99,11 @@ public class SyncFeedback : MonoBehaviour
         }
 
         _cameraTransform.localPosition = origin;
+    }
+
+    private void RestoreOriginalColors()
+    {
+        if (_p1Sprite != null) _p1Sprite.color = _p1OriginalColor;
+        if (_p2Sprite != null) _p2Sprite.color = _p2OriginalColor;
     }
 }
