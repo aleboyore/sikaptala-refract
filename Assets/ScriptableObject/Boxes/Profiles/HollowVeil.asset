@@ -10,21 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cc8dafa8a0b8a084dac273c2215d7249, type: 3}
-  m_Name: DefaultBox_Profile
+  m_Name: HollowVeil
   m_EditorClassIdentifier: Assembly-CSharp::BoxBehaviorProfile
-  gravityScale: 2
+  gravityScale: 1
   linearDamping: 8
   pushResistance: 2
   returnToRestSpeed: 0
   allowVerticalMovement: 1
   shardCanStandOn: 1
-  veilCanStandOn: 1
-  shardCanPush: 0
+  veilCanStandOn: 0
+  shardCanPush: 1
   veilCanPush: 0
   shardKillsOnPush: 0
   veilKillsOnPush: 0
   shardCanPassThrough: 0
-  veilCanPassThrough: 0
+  veilCanPassThrough: 1
   notVisibleToVeil: 0
   notVisibleToShard: 0
   oneWayEnabled: 0
