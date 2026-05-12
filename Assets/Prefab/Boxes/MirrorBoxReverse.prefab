@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7517286691531912470}
   - component: {fileID: 7297037659872754818}
   - component: {fileID: 7193122541486501118}
+  - component: {fileID: 4888410580473780086}
   m_Layer: 14
   m_Name: MirrorBoxReverse
   m_TagString: Untagged
@@ -180,3 +181,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScriptableBox
   profile: {fileID: 11400000, guid: 2391ebf90611d8e4bacd450f5452f962, type: 2}
+--- !u!114 &4888410580473780086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1569538312049611478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4314d1ef16fecf42a1afece15271f21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CheckpointIdentity
+  id: d8621487-bfe7-459e-988b-207bb4a62480
+  PrefabName: MirrorBoxReverse

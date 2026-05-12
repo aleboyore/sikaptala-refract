@@ -1,15 +1,19 @@
 using UnityEngine;
 
-public class PowerupBehavior : MonoBehaviour
+public class PowerupBehavior : MonoBehaviour, ICheckpointRestorer
 {
     [SerializeField] private PowerupDefinition definition;
     private SpriteRenderer _spriteRenderer;
+    private Animator _animator;
     private CharacterState _charState;
     private bool _consumed;
 
     void Awake()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        _animator = GetComponent<Animator>();
+        if (_animator == null)
+            _animator = gameObject.AddComponent<Animator>();
         
         // Find the player's CharacterState in the scene
         _charState = FindAnyObjectByType<CharacterState>();
@@ -18,7 +22,7 @@ public class PowerupBehavior : MonoBehaviour
             _charState.onStateChanged.AddListener(OnPlayerStateChanged);
         }
         
-        UpdateOrbSprite();
+        UpdateVisuals();
     }
 
     void OnDestroy()
@@ -31,16 +35,59 @@ public class PowerupBehavior : MonoBehaviour
 
     private void OnPlayerStateChanged(PlayerSkinState newState)
     {
-        UpdateOrbSprite();
+        UpdateVisuals();
     }
 
-    private void UpdateOrbSprite()
+    private void UpdateVisuals()
     {
         if (_spriteRenderer == null || definition == null || _charState == null) return;
 
         Sprite sprite = definition.GetSprite(_charState.current);
         if (sprite != null)
             _spriteRenderer.sprite = sprite;
+
+        // Apply animation clip if present. Prefer definition animation; fall back to effect's animation.
+        PowerupEffect effect = definition.GetEffect(_charState.current);
+        AnimationClip clip = definition.GetAnimation(_charState.current);
+        float speed = definition.GetAnimationSpeed();
+        if (clip == null && effect != null)
+        {
+            clip = effect.SpriteAnimation;
+            // if definition speed not configured (0 or negative), use effect speed
+            if (speed <= 0f) speed = effect.AnimationSpeed;
+        }
+
+        if (_animator != null && clip != null)
+        {
+            ApplyAnimationClip(_animator, clip, speed > 0f ? speed : 1f);
+        }
+    }
+
+    private void ApplyAnimationClip(Animator animator, AnimationClip clip, float speed)
+    {
+        if (animator == null || clip == null) return;
+
+        if (animator.runtimeAnimatorController == null)
+        {
+            Debug.LogWarning($"[Powerup] Animator on {gameObject.name} has no runtime controller to override.");
+            return;
+        }
+
+        var overrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
+        var clipsList = new System.Collections.Generic.List<System.Collections.Generic.KeyValuePair<AnimationClip, AnimationClip>>();
+        overrideController.GetOverrides(clipsList);
+
+        if (clipsList.Count > 0)
+        {
+            overrideController[clipsList[0].Key.name] = clip;
+            animator.runtimeAnimatorController = overrideController;
+            animator.speed = speed;
+            animator.SetTrigger("EffectAnimation");
+        }
+        else
+        {
+            Debug.LogWarning($"[Powerup] No clips found in animator controller for {gameObject.name}");
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -68,7 +115,28 @@ public class PowerupBehavior : MonoBehaviour
                 effect.Apply(other.gameObject);
         }
 
-        // Consumed after a valid pickup path.
-        Destroy(gameObject);
+        // Mark as consumed - deactivate instead of destroy so we can restore on checkpoint
+        gameObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// Restore this powerup to its checkpoint state (not consumed).
+    /// Called when player dies and respawns at a checkpoint after this powerup was collected.
+    /// </summary>
+    public void RestoreToCheckpoint()
+    {
+        _consumed = false;
+        gameObject.SetActive(true);
+        Debug.Log($"[Checkpoint] Powerup {gameObject.name} restored to available");
+    }
+
+    /// <summary>
+    /// Revert if this powerup was created after the checkpoint.
+    /// Deactivates it so it doesn't affect the restored world state.
+    /// </summary>
+    public void RevertPostCheckpoint()
+    {
+        gameObject.SetActive(false);
+        Debug.Log($"[Checkpoint] Powerup {gameObject.name} reverted (post-checkpoint)");
     }
 }

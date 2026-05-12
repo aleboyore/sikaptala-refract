@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D))]
-public class ScriptableBox : MonoBehaviour
+public class ScriptableBox : MonoBehaviour, ICheckpointRestorer
 {
     [Header("Behavior")]
     [SerializeField] private BoxBehaviorProfile profile;
@@ -258,5 +258,37 @@ public class ScriptableBox : MonoBehaviour
         LayerMask mask = LayerMask.GetMask("Ground", "Shared");
 
         return Physics2D.Raycast(origin, Vector2.down, halfHeight + 0.08f, mask);
+    }
+
+    /// <summary>
+    /// Restore this box to its checkpoint state.
+    /// Called when player dies and respawns at a checkpoint after this box was moved/interacted with.
+    /// </summary>
+    public void RestoreToCheckpoint()
+    {
+        if (rb == null) rb = GetComponent<Rigidbody2D>();
+        
+        // Reset position and state to spawn position
+        gameObject.SetActive(true);
+        rb.bodyType = RigidbodyType2D.Dynamic;
+        transform.position = spawnPosition;
+        rb.linearVelocity = Vector2.zero;
+        restPosition = rb.position;
+        
+        // Clear all contact state
+        contactSet.Clear();
+        effectAppliedSet.Clear();
+        
+        Debug.Log($"[Checkpoint] Box {gameObject.name} restored to spawn state");
+    }
+
+    /// <summary>
+    /// Revert if this box was created after the checkpoint.
+    /// Deactivates it so it doesn't affect the restored world state.
+    /// </summary>
+    public void RevertPostCheckpoint()
+    {
+        gameObject.SetActive(false);
+        Debug.Log($"[Checkpoint] Box {gameObject.name} reverted (post-checkpoint)");
     }
 }

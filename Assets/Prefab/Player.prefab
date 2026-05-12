@@ -133,7 +133,7 @@ Transform:
   m_GameObject: {fileID: 1996835114921375712}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: 0, y: 7, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -611,7 +611,7 @@ GameObject:
   m_Component:
   - component: {fileID: 34203876100047816}
   m_Layer: 6
-  m_Name: Visual
+  m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -645,6 +645,7 @@ GameObject:
   - component: {fileID: 6930136926856731494}
   - component: {fileID: 3843903766170335110}
   - component: {fileID: 261859406605022023}
+  - component: {fileID: 8252203881553719364}
   m_Layer: 0
   m_Name: CinemachineCamera
   m_TagString: Untagged
@@ -661,7 +662,7 @@ Transform:
   m_GameObject: {fileID: 6927647946688953772}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: 0, y: 7, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -725,7 +726,7 @@ MonoBehaviour:
   CameraDistance: 10
   DeadZoneDepth: 0
   Composition:
-    ScreenPosition: {x: 0, y: 0}
+    ScreenPosition: {x: 0, y: 0.3}
     DeadZone:
       Enabled: 0
       Size: {x: 0.2, y: 0.2}
@@ -741,6 +742,26 @@ MonoBehaviour:
     Time: 0
     Smoothing: 0
     IgnoreY: 0
+--- !u!114 &8252203881553719364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6927647946688953772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f453f694addf4275988fac205bc91968, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineConfiner2D
+  BoundingShape2D: {fileID: 0}
+  Damping: 0.5
+  SlowingDistance: 5
+  OversizeWindow:
+    Enabled: 0
+    MaxWindowSize: 0
+    Padding: 0
+  m_LegacyMaxWindowSize: -2
 --- !u!1 &6980068101211474024
 GameObject:
   m_ObjectHideFlags: 0
@@ -850,8 +871,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 2080801177
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 8216871337700697666, guid: c2f2e3e0e6fd3d5408082490bace291b, type: 3}
@@ -895,14 +916,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4067226108928599330}
-  - component: {fileID: 7798949002587942773}
   m_Layer: 6
   m_Name: VFX_ShardBurst
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4067226108928599330
 Transform:
   m_ObjectHideFlags: 0
@@ -919,19 +939,6 @@ Transform:
   - {fileID: 6039822933282883137}
   m_Father: {fileID: 6026208757792034084}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7798949002587942773
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7707368448263670624}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 634f5e886ac31254cad92b9015a05a51, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PowerupBehavior
-  definition: {fileID: 0}
 --- !u!1 &7925654273681630010
 GameObject:
   m_ObjectHideFlags: 0
@@ -1010,8 +1017,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 2080801177
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -4236312275158654639, guid: ae85991b33344a04fae7482b42c529fb, type: 3}
@@ -1058,7 +1065,7 @@ GameObject:
   - component: {fileID: 7666520624807413751}
   - component: {fileID: 8228142982277628704}
   m_Layer: 6
-  m_Name: Image
+  m_Name: EffectIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1278,6 +1285,8 @@ GameObject:
   - component: {fileID: 4139671760641617897}
   - component: {fileID: 953528487703303467}
   - component: {fileID: 5566370179597139380}
+  - component: {fileID: 320930642755388605}
+  - component: {fileID: 6338802152915066769}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -1463,6 +1472,36 @@ MonoBehaviour:
   boxLayer:
     serializedVersion: 2
     m_Bits: 16384
+--- !u!114 &320930642755388605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9211799820994990070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9b321de1ee1a12469b41f64a2c4cb5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EffectUIController
+  effectIcon: {fileID: 8228142982277628704}
+  effectText: {fileID: 3826707288084146411}
+  durationText: {fileID: 2250772476473515828}
+  countText: {fileID: 7499491933194154347}
+--- !u!114 &6338802152915066769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9211799820994990070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4314d1ef16fecf42a1afece15271f21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CheckpointIdentity
+  id: 99f2cbc1-36e4-4ce7-a419-ff1cc0881f1f
+  PrefabName: Player
 --- !u!1001 &5872697759412208443
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1510,6 +1549,14 @@ PrefabInstance:
     - target: {fileID: 167127461021795706, guid: 88c5eaa148733594dbbf6db6f971760a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5819717731591033862, guid: 88c5eaa148733594dbbf6db6f971760a, type: 3}
+      propertyPath: m_SortingLayer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5819717731591033862, guid: 88c5eaa148733594dbbf6db6f971760a, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 2080801177
       objectReference: {fileID: 0}
     - target: {fileID: 7015823821891834169, guid: 88c5eaa148733594dbbf6db6f971760a, type: 3}
       propertyPath: m_Name
