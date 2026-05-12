@@ -202,14 +202,9 @@ public class GameManager : MonoBehaviour
 			}
 		}
 
-		// Re-enable temporarily if disabled so CanDie() can run.
-		bool wasInactive = !_player.gameObject.activeInHierarchy;
-		if (wasInactive) _player.gameObject.SetActive(true);
-
+		// Check if player can die (shields/invulnerability)
 		if (!_player.CanDie())
 		{
-			// Shield/invulnerability absorbed the hit — leave the player as they were.
-			if (wasInactive) _player.gameObject.SetActive(false);
 			return;
 		}
 
@@ -226,19 +221,16 @@ public class GameManager : MonoBehaviour
 
 		_player.GetComponent<EffectTracker>()?.ClearAllEffects(_player.gameObject);
 
-		// Hide the player for the respawn delay.
-		_player.gameObject.SetActive(false);
-
+		// Do not disable the player on death; wait and teleport them back to respawn.
 		StartCoroutine(RespawnAfterDelay(respawnPos, currentRevision));
 	}
 
 	private bool EnsureActivePlayerForRespawn(Vector3 respawnPos)
 	{
-		// Re-enable an existing but disabled player.
+		// If the registered player exists but is inactive, leave it as-is (we no longer disable on death).
 		if (_player != null && !_player.gameObject.activeInHierarchy)
 		{
-			Debug.LogWarning($"[GameManager] Re-enabling existing player '{_player.gameObject.name}' for respawn.");
-			_player.gameObject.SetActive(true);
+			Debug.LogWarning($"[GameManager] Registered player '{_player.gameObject.name}' is inactive. Will reuse instance without changing active state.");
 		}
 
 		// Try scene search.
@@ -270,7 +262,6 @@ public class GameManager : MonoBehaviour
 			Debug.Log($"[GameManager] Respawned player prefab '{_playerPrefab.name}' at x = {respawnPos.x}, y = {respawnPos.y}");
 		}
 
-		_player.gameObject.SetActive(true);
 		return true;
 	}
 
@@ -287,7 +278,6 @@ public class GameManager : MonoBehaviour
 			yield break;
 		}
 
-		_player.gameObject.SetActive(true);
 		_player.ResetToCheckpoint(respawnPos);
 
 		Debug.Log($"[GameManager] Respawned player at {respawnPos} (rev {currentRevision})");

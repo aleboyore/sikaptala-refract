@@ -76,6 +76,19 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        private void OnDisable()
+        {
+            try
+            {
+                var st = new System.Diagnostics.StackTrace(true);
+                Debug.LogWarning($"[PlayerController] OnDisable called for '{gameObject.name}'. Stack:\n{st}");
+            }
+            catch
+            {
+                Debug.LogWarning($"[PlayerController] OnDisable called for '{gameObject.name}' (stack unavailable)");
+            }
+        }
+
         private void OnDestroy()
         {
             Physics2D.queriesStartInColliders = _cachedQueryStartInColliders;

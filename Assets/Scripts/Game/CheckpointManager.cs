@@ -34,6 +34,11 @@ public class CheckpointManager : MonoBehaviour
 	// Track objects that were active at the current checkpoint (legacy quick set)
 	private HashSet<GameObject> _checkpointActiveObjects = new();
 
+	private static bool IsPlayerHierarchy(GameObject go)
+	{
+		return go != null && (go.GetComponentInParent<PlayerController>() != null || go.transform.root.CompareTag("Player"));
+	}
+
 	private void Awake() 
 	{
 		if (Instance == null)
@@ -72,6 +77,11 @@ public class CheckpointManager : MonoBehaviour
 		foreach (var id in identities)
 		{
 			var go = id.gameObject;
+
+			// If this identity belongs to the player, skip toggling it here.
+			// GameManager is responsible for player lifecycle (spawn/respawn/etc.).
+			if (IsPlayerHierarchy(go))
+				continue;
 			var entry = new CheckpointEntry
 			{
 				id = id.Id,
@@ -149,6 +159,11 @@ public class CheckpointManager : MonoBehaviour
 		foreach (var id in identities)
 		{
 			var go = id.gameObject;
+
+			// Never toggle the player object here; GameManager owns player lifecycle.
+			if (go != null && go.CompareTag("Player"))
+				continue;
+
 			if (lookup.TryGetValue(id.Id, out var entry))
 			{
 				// Object existed at checkpoint: restore transform and active state
@@ -163,6 +178,9 @@ public class CheckpointManager : MonoBehaviour
 			else
 			{
 				// Object not in snapshot -> created after checkpoint, revert
+				// Skip player objects to avoid deactivating the player during restore
+				if (go != null && go.CompareTag("Player"))
+					continue;
 				go.SetActive(false);
 				var restorer = go.GetComponent<ICheckpointRestorer>();
 				restorer?.RevertPostCheckpoint();
@@ -216,6 +234,8 @@ public class CheckpointManager : MonoBehaviour
 		foreach (var id in identities)
 		{
 			var go = id.gameObject;
+			if (IsPlayerHierarchy(go))
+				continue;
 			snapshot.entries.Add(new CheckpointEntry
 			{
 				id = id.Id,
@@ -256,6 +276,8 @@ public class CheckpointManager : MonoBehaviour
 		foreach (var id in identities)
 		{
 			var go = id.gameObject;
+			if (IsPlayerHierarchy(go))
+				continue;
 			if (lookup.TryGetValue(id.Id, out var entry))
 			{
 				go.SetActive(entry.active);
