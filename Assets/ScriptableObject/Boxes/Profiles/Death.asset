@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cc8dafa8a0b8a084dac273c2215d7249, type: 3}
-  m_Name: Box4
+  m_Name: Death
   m_EditorClassIdentifier: Assembly-CSharp::BoxBehaviorProfile
   gravityScale: 2
   linearDamping: 8
   pushResistance: 2
   returnToRestSpeed: 0
   allowVerticalMovement: 1
-  shardCanStandOn: 1
+  shardCanStandOn: 0
   veilCanStandOn: 0
-  shardCanPush: 1
+  shardCanPush: 0
   veilCanPush: 0
-  shardKillsOnPush: 0
-  veilKillsOnPush: 0
+  shardKillsOnPush: 1
+  veilKillsOnPush: 1
   shardCanPassThrough: 0
   veilCanPassThrough: 0
   notVisibleToVeil: 0
@@ -31,8 +31,8 @@ MonoBehaviour:
   pushLeftOnly: 0
   crushOnContact: 0
   killsOnTouch: 0
-  shardKillsOnTouch: 0
-  veilKillsOnTouch: 0
+  shardKillsOnTouch: 1
+  veilKillsOnTouch: 1
   respawnDelay: 0
   moveOnlyWhenGrounded: 0
   shardContactEffect: {fileID: 0}

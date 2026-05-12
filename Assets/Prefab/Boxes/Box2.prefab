@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1737709059595225801}
   - component: {fileID: 7764073901466920226}
   - component: {fileID: 3319557216222283834}
-  - component: {fileID: 6587480552234854611}
+  - component: {fileID: 4568575350405251337}
   m_Layer: 14
   m_Name: Box2
   m_TagString: Untagged
@@ -181,7 +181,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScriptableBox
   profile: {fileID: 11400000, guid: f8a0b8c63fba2ac41b699a8f16532a4d, type: 2}
---- !u!114 &6587480552234854611
+--- !u!114 &4568575350405251337
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -193,5 +193,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4314d1ef16fecf42a1afece15271f21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheckpointIdentity
-  id: 1d5a9b35-0caa-49f9-97a0-965f6d5ebaa1
-  PrefabName: DefaultBox
+  id: c2cf6186-975e-4f1e-bebb-bd7356086268
+  PrefabName: Box2

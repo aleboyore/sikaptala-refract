@@ -3,7 +3,7 @@ using UnityEngine;
 
 /// <summary>
 /// Tracks active power-up effects on the player.
-/// On skin swap, reverts and cancels all non-persistent effects.
+/// On skin swap, reverts and cancels all effects.
 /// </summary>
 public class EffectTracker : MonoBehaviour
 {
@@ -179,23 +179,7 @@ public class EffectTracker : MonoBehaviour
 
     private void OnStateChanged(PlayerSkinState _)
     {
-        // Iterate in reverse so we can safely remove while iterating
-        for (int i = _activeEffects.Count - 1; i >= 0; i--)
-        {
-            var (effect, runner) = _activeEffects[i];
-
-            if (effect.persistAcrossStateSwap)
-                continue; // leave this effect running
-
-            // Revert the effect's changes before killing the coroutine
-            effect.Remove(gameObject);
-
-            if (runner != null)
-                Destroy(runner);
-
-            _activeEffects.RemoveAt(i);
-            _displayEffects.RemoveAll(e => e.runner == runner || e.effect == effect);
-        }
+        ClearAllEffects(gameObject);
     }
 
     /// <summary>

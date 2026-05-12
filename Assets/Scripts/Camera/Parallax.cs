@@ -18,13 +18,14 @@ public class Parallax : MonoBehaviour
 
     void Start()
     {
-        // Cinemachine moves the Main Camera, so we grab the Main Camera's transform
-        cameraTransform = Camera.main.transform;
-        lastCameraPosition = cameraTransform.position;
+        TryBindMainCamera();
     }
 
     void FixedUpdate()
     {
+        if (!TryBindMainCamera())
+            return;
+
         Vector3 rawDeltaMovement = cameraTransform.position - lastCameraPosition;
         
         // Apply damping to velocity for smooth parallax (reduces jitter on direction changes)
@@ -32,5 +33,22 @@ public class Parallax : MonoBehaviour
         
         transform.position += new Vector3(parallaxVelocity.x * parallaxMultiplierX, parallaxVelocity.y * parallaxMultiplierY, 0);
         lastCameraPosition = cameraTransform.position;
+    }
+
+    private bool TryBindMainCamera()
+    {
+        // The main camera can be recreated on scene loads; refresh stale references safely.
+        if (cameraTransform == null)
+        {
+            Camera mainCam = Camera.main;
+            if (mainCam == null)
+                return false;
+
+            cameraTransform = mainCam.transform;
+            lastCameraPosition = cameraTransform.position;
+            parallaxVelocity = Vector3.zero;
+        }
+
+        return true;
     }
 }

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
@@ -8,25 +9,28 @@ public class GameManager : MonoBehaviour
 
 	[SerializeField] private PlayerController _player;
 	[SerializeField] private GameObject _playerPrefab;
+	[SerializeField] private float _respawnDelaySeconds = 0.75f;
+	[SerializeField] private bool _autoRespawnIfPlayerMissing = true;
 	[SerializeField] private List<string> _levelNames; // List of all level names in order
 	private int _currentLevelIndex = 0;
 
 	private bool _isProcessingDeath = false;
-	private Vector3 _levelOriginalSpawnPoint = Vector3.zero; // Original spawn point for current level
+	private Vector3 _levelOriginalSpawnPoint = Vector3.zero;
 	private bool _hasLoadedFirstLevel = false;
 
-	private void Awake() {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject); // Prevent deletion on scene load
-        }
-        else
-        {
-            Destroy(gameObject); // Clean up duplicates if we return to Main Menu
-        }
+	private void Awake()
+	{
+		if (Instance == null)
+		{
+			Instance = this;
+			DontDestroyOnLoad(gameObject);
+		}
+		else
+		{
+			Destroy(gameObject);
+			return; // Don't run the rest of Awake on the duplicate
+		}
 
-		// Auto-find player controller if not explicitly assigned in Inspector
 		if (_player == null)
 		{
 			_player = FindAnyObjectByType<PlayerController>();
@@ -41,17 +45,45 @@ public class GameManager : MonoBehaviour
 			}
 		}
 
-		// Subscribe to sceneLoaded so we can auto-register players spawned on scene load
 		SceneManager.sceneLoaded += OnSceneLoaded;
 	}
 
 	private void Start()
 	{
-		// Load the first level if this is the first time GameManager is initialized
 		if (!_hasLoadedFirstLevel && _currentLevelIndex == 0)
 		{
 			_hasLoadedFirstLevel = true;
 			LoadFirstLevel();
+		}
+	}
+
+	private void Update()
+	{
+		// BUG FIX: The old Update block would see the player inactive during the
+		// respawn delay window (player is SetActive(false) in TriggerDeath) and
+		// immediately re-enable + reposition them via EnsureActivePlayerForRespawn,
+		// completely bypassing the respawn delay and snapshot restore.
+		// The fix: only do the auto-recover if we are NOT already processing a death.
+		// The _isProcessingDeath guard already exists, but the block below it was
+		// calling EnsureActivePlayerForRespawn + ResetToCheckpoint directly, which
+		// fights with RespawnAfterDelay. It is removed entirely — RespawnAfterDelay
+		// is the single owner of re-enabling the player after death.
+
+		if (!_autoRespawnIfPlayerMissing)
+			return;
+
+		if (_isProcessingDeath)
+			return;
+
+		if (CheckpointManager.Instance == null)
+			return;
+
+		// Only handle the case where the player reference is fully lost (null).
+		// A disabled-but-valid player is handled exclusively by RespawnAfterDelay.
+		if (_player == null)
+		{
+			Debug.LogWarning("[GameManager] Auto-respawn triggered because player reference is null.");
+			TriggerDeath();
 		}
 	}
 
@@ -62,21 +94,26 @@ public class GameManager : MonoBehaviour
 
 	private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
 	{
-		// Find the level's original spawn point
+		// Reset death flag on scene load so a death mid-transition doesn't soft-lock.
+		_isProcessingDeath = false;
+
+		// Find the level's original spawn point.
 		var spawnPoint = FindAnyObjectByType<PlayerSpawnPoint>();
+		Vector3 spawnPosition;
 		if (spawnPoint != null)
 		{
 			_levelOriginalSpawnPoint = spawnPoint.transform.position;
 			Debug.Log($"[GameManager] Found PlayerSpawnPoint at x = {_levelOriginalSpawnPoint.x}, y = {_levelOriginalSpawnPoint.y} for level '{scene.name}'");
+			spawnPosition = _levelOriginalSpawnPoint;
 		}
 		else
 		{
 			Debug.LogWarning($"[GameManager] No PlayerSpawnPoint found in level '{scene.name}' - level spawn will default to zero");
 			_levelOriginalSpawnPoint = Vector3.zero;
+			spawnPosition = _levelOriginalSpawnPoint;
 		}
 
-		// If player isn't set (or was destroyed during scene unload), try to find it in the newly loaded scene.
-		// If no scene player exists, spawn one from the configured prefab.
+		// If player isn't set (or was destroyed during scene unload), find or spawn one.
 		if (_player == null)
 		{
 			_player = FindAnyObjectByType<PlayerController>();
@@ -87,8 +124,8 @@ public class GameManager : MonoBehaviour
 			}
 			else if (_playerPrefab != null)
 			{
-				Vector3 spawnPosition = spawnPoint != null ? spawnPoint.transform.position : _levelOriginalSpawnPoint;
 				GameObject spawnedPlayer = Instantiate(_playerPrefab, spawnPosition, Quaternion.identity);
+				spawnedPlayer.SetActive(true);
 				_player = spawnedPlayer.GetComponent<PlayerController>();
 				if (_player != null)
 				{
@@ -106,10 +143,17 @@ public class GameManager : MonoBehaviour
 			}
 		}
 
-		if (CheckpointManager.Instance != null)
+		if (_player != null)
 		{
-			StartCoroutine(CaptureInitialSnapshotNextFrame());
+			_player.gameObject.SetActive(true);
+			_player.ResetToCheckpoint(spawnPosition);
+			Debug.Log($"[GameManager] Positioned player '{_player.gameObject.name}' at level spawn x = {spawnPosition.x}, y = {spawnPosition.y} for scene '{scene.name}'");
 		}
+
+		// BUG FIX: CheckpointManager lives in the scene and may not have finished
+		// its Awake() by the time OnSceneLoaded fires (execution order dependent).
+		// Poll for it instead of doing a one-frame yield that can miss it.
+		StartCoroutine(CaptureInitialSnapshotWhenReady());
 	}
 
 	public void NotifyLockIn(PlayerController player)
@@ -119,94 +163,175 @@ public class GameManager : MonoBehaviour
 			LoadNextLevel();
 	}
 
-    // Call this from the PlayerController's Start() or Awake() method
-    public void RegisterPlayer(PlayerController player)
-    {
-        _player = player;
-    }
+	public void RegisterPlayer(PlayerController player)
+	{
+		_player = player;
+	}
 
 	public void TriggerDeath()
 	{
-		if (_player == null)
-		{
-			if (_playerPrefab == null) return;
-
-			Vector3 prefabSpawnPos = CheckpointManager.Instance != null && CheckpointManager.Instance.CheckpointRevision > 0
-				? CheckpointManager.Instance.PlayerPosition
-				: _levelOriginalSpawnPoint;
-
-			GameObject spawnedPlayer = Instantiate(_playerPrefab, prefabSpawnPos, Quaternion.identity);
-			spawnedPlayer.SetActive(true);
-			_player = spawnedPlayer.GetComponent<PlayerController>();
-			if (_player != null)
-			{
-				RegisterPlayer(_player);
-				Debug.Log($"[GameManager] Respawned player prefab '{_playerPrefab.name}' at x = {prefabSpawnPos.x}, y = {prefabSpawnPos.y}");
-			}
-			else
-			{
-				Debug.LogError($"[GameManager] Respawned player prefab '{_playerPrefab.name}' but no PlayerController component was found on it");
-			}
-			_isProcessingDeath = false;
-			return;
-		}
 		if (_isProcessingDeath) return;
 
-		// Check if player can actually die (shields/invulnerability)
-		if (!_player.CanDie()) return;
+		// Compute respawn position before touching player state.
+		Vector3 respawnPos = CheckpointManager.Instance != null && CheckpointManager.Instance.CheckpointRevision > 0
+			? CheckpointManager.Instance.PlayerPosition
+			: _levelOriginalSpawnPoint;
 
-		if (CheckpointManager.Instance == null) return;
+		// BUG FIX: EnsureActivePlayerForRespawn re-enables the player immediately.
+		// We need the player active to call CanDie(), but we must NOT leave them
+		// active if we're about to SetActive(false) for the delay. So we check CanDie
+		// before EnsureActive when possible, and only call EnsureActive to get a
+		// reference if _player is null.
+		if (_player == null)
+		{
+			_player = FindAnyObjectByType<PlayerController>();
+			if (_player == null)
+			{
+				if (_playerPrefab != null)
+				{
+					var go = Instantiate(_playerPrefab, respawnPos, Quaternion.identity);
+					go.SetActive(true);
+					_player = go.GetComponent<PlayerController>();
+					if (_player != null) RegisterPlayer(_player);
+				}
+				if (_player == null)
+				{
+					Debug.LogWarning("[GameManager] TriggerDeath: no player found, cannot process death.");
+					return;
+				}
+			}
+		}
+
+		// Re-enable temporarily if disabled so CanDie() can run.
+		bool wasInactive = !_player.gameObject.activeInHierarchy;
+		if (wasInactive) _player.gameObject.SetActive(true);
+
+		if (!_player.CanDie())
+		{
+			// Shield/invulnerability absorbed the hit — leave the player as they were.
+			if (wasInactive) _player.gameObject.SetActive(false);
+			return;
+		}
+
+		if (CheckpointManager.Instance == null)
+		{
+			Debug.LogWarning("[GameManager] TriggerDeath: CheckpointManager not available, cannot respawn.");
+			return;
+		}
 
 		_isProcessingDeath = true;
 		int currentRevision = CheckpointManager.Instance.CheckpointRevision;
 
-		Debug.Log($"[GameManager] Death triggered. Restoring to checkpoint at {CheckpointManager.Instance.PlayerPosition} (rev {currentRevision})");
+		Debug.Log($"[GameManager] Death triggered. Respawn pos={respawnPos} (rev {currentRevision})");
 
-		// Clear player effects before resetting position
-		_player.gameObject.SetActive(true);
 		_player.GetComponent<EffectTracker>()?.ClearAllEffects(_player.gameObject);
 
-		// Determine respawn position: use checkpoint if reached, otherwise use level's original spawn point
-		Vector3 respawnPos = (currentRevision > 0) 
-			? CheckpointManager.Instance.PlayerPosition 
-			: _levelOriginalSpawnPoint;
+		// Hide the player for the respawn delay.
+		_player.gameObject.SetActive(false);
 
-		// Restore the player position and state
-		_player.ResetToCheckpoint(respawnPos);
-		
-		if (currentRevision == 0)
-		{
-			Debug.Log($"[GameManager] No checkpoint reached yet; respawning at level spawn point x = {respawnPos.x}, y = {respawnPos.y}");
-		}
-
-		// Restore world objects (pickups, boxes) based on checkpoint snapshot
-		// If a checkpoint exists, restore from the snapshot. Otherwise, return all
-		// checkpoint-aware objects to their initial spawn state.
-		if (currentRevision > 0)
-			CheckpointManager.Instance.RestoreFromSnapshot();
-		else
-			CheckpointManager.Instance.RestoreInitialSnapshot();
-
-		StartCoroutine(ClearDeathProcessingNextFrame());
+		StartCoroutine(RespawnAfterDelay(respawnPos, currentRevision));
 	}
 
-	private System.Collections.IEnumerator ClearDeathProcessingNextFrame()
+	private bool EnsureActivePlayerForRespawn(Vector3 respawnPos)
 	{
+		// Re-enable an existing but disabled player.
+		if (_player != null && !_player.gameObject.activeInHierarchy)
+		{
+			Debug.LogWarning($"[GameManager] Re-enabling existing player '{_player.gameObject.name}' for respawn.");
+			_player.gameObject.SetActive(true);
+		}
+
+		// Try scene search.
+		if (_player == null)
+		{
+			_player = FindAnyObjectByType<PlayerController>();
+			if (_player != null) RegisterPlayer(_player);
+		}
+
+		// Last resort: spawn from prefab.
+		if (_player == null)
+		{
+			if (_playerPrefab == null)
+			{
+				Debug.LogError("[GameManager] EnsureActivePlayerForRespawn: no player and no prefab assigned.");
+				return false;
+			}
+
+			GameObject spawnedPlayer = Instantiate(_playerPrefab, respawnPos, Quaternion.identity);
+			spawnedPlayer.SetActive(true);
+			_player = spawnedPlayer.GetComponent<PlayerController>();
+			if (_player == null)
+			{
+				Debug.LogError($"[GameManager] Respawned player prefab '{_playerPrefab.name}' but no PlayerController component found.");
+				return false;
+			}
+
+			RegisterPlayer(_player);
+			Debug.Log($"[GameManager] Respawned player prefab '{_playerPrefab.name}' at x = {respawnPos.x}, y = {respawnPos.y}");
+		}
+
+		_player.gameObject.SetActive(true);
+		return true;
+	}
+
+	private IEnumerator RespawnAfterDelay(Vector3 respawnPos, int currentRevision)
+	{
+		if (_respawnDelaySeconds > 0f)
+			yield return new WaitForSeconds(_respawnDelaySeconds);
+
+		// Re-acquire the player in case something changed during the delay.
+		if (!EnsureActivePlayerForRespawn(respawnPos))
+		{
+			Debug.LogError("[GameManager] RespawnAfterDelay: could not find or create a player.");
+			_isProcessingDeath = false;
+			yield break;
+		}
+
+		_player.gameObject.SetActive(true);
+		_player.ResetToCheckpoint(respawnPos);
+
+		Debug.Log($"[GameManager] Respawned player at {respawnPos} (rev {currentRevision})");
+
+		// Restore world objects.
+		if (CheckpointManager.Instance != null)
+		{
+			if (currentRevision > 0)
+				CheckpointManager.Instance.RestoreFromSnapshot();
+			else
+				CheckpointManager.Instance.RestoreInitialSnapshot();
+		}
+		else
+		{
+			Debug.LogWarning("[GameManager] RespawnAfterDelay: CheckpointManager gone, world state not restored.");
+		}
+
+		// Clear the flag one frame later so any physics events this frame don't
+		// immediately re-trigger death.
 		yield return null;
 		_isProcessingDeath = false;
 	}
 
-	private System.Collections.IEnumerator CaptureInitialSnapshotNextFrame()
+	// BUG FIX: replaced CaptureInitialSnapshotNextFrame (single yield return null,
+	// which races with CheckpointManager.Awake) with a polling coroutine that waits
+	// until CheckpointManager.Instance is ready or a timeout expires.
+	private IEnumerator CaptureInitialSnapshotWhenReady()
 	{
-		yield return null;
+		float timeout = 3f;
+		while (CheckpointManager.Instance == null && timeout > 0f)
+		{
+			timeout -= Time.unscaledDeltaTime;
+			yield return null;
+		}
 
 		if (CheckpointManager.Instance == null)
+		{
+			Debug.LogWarning("[GameManager] CheckpointManager never became available — initial snapshot not captured. Deaths before any checkpoint will not restore world state.");
 			yield break;
+		}
 
 		CheckpointManager.Instance.CaptureInitialSnapshot(_levelOriginalSpawnPoint);
 	}
 
-	
 	private void LoadFirstLevel()
 	{
 		if (_levelNames == null || _levelNames.Count == 0)
@@ -227,14 +352,14 @@ public class GameManager : MonoBehaviour
 			Debug.LogWarning("[GameManager] Level names list is empty or not set in Inspector");
 			return;
 		}
-		
+
 		_currentLevelIndex++;
 		if (_currentLevelIndex >= _levelNames.Count)
 		{
 			Debug.Log("[GameManager] All levels completed!");
 			return;
 		}
-		
+
 		string nextLevel = _levelNames[_currentLevelIndex];
 		Debug.Log($"[GameManager] Loading next level: {nextLevel} (index {_currentLevelIndex})");
 		SceneManager.LoadScene(nextLevel);

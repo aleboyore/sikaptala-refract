@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8089236882005517104}
   - component: {fileID: 9202930157352655216}
   - component: {fileID: 7812544982607439386}
-  - component: {fileID: 2657594922181285621}
+  - component: {fileID: 4243524917875283312}
   m_Layer: 14
   m_Name: HollowShard
   m_TagString: Untagged
@@ -181,7 +181,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScriptableBox
   profile: {fileID: 11400000, guid: 54d42a3c0ad28c640b0be8cedd9c18ec, type: 2}
---- !u!114 &2657594922181285621
+--- !u!114 &4243524917875283312
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -193,5 +193,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4314d1ef16fecf42a1afece15271f21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheckpointIdentity
-  id: 1d5a9b35-0caa-49f9-97a0-965f6d5ebaa1
-  PrefabName: DefaultBox
+  id: 736f10c8-a9d9-4965-8ac5-826c0e492c3d
+  PrefabName: HollowShard

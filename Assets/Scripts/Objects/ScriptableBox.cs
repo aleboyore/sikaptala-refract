@@ -279,8 +279,19 @@ public class ScriptableBox : MonoBehaviour, ICheckpointRestorer
 
         foreach (SpriteRenderer spriteRenderer in spriteRenderers)
         {
-            if (spriteRenderer != null)
-                spriteRenderer.enabled = !isNotVisible;
+            if (spriteRenderer == null) continue;
+
+            // If this renderer is part of the player's hierarchy (player parented to box), skip it.
+            if (spriteRenderer.GetComponentInParent<PlayerController>() != null)
+                continue;
+
+            // Ensure the renderer actually belongs to this box instance (avoid toggling shared or nested visuals)
+            ScriptableBox ownerBox = spriteRenderer.GetComponentInParent<ScriptableBox>();
+            if (ownerBox != this)
+                continue;
+
+            spriteRenderer.enabled = !isNotVisible;
+            Debug.Log($"[ScriptableBox] Toggled renderer '{spriteRenderer.name}' on '{gameObject.name}' visible={!isNotVisible}");
         }
 
         Debug.Log($"[ScriptableBox] RefreshVisibility '{gameObject.name}' playerState={playerState} isNotVisible={isNotVisible}");
