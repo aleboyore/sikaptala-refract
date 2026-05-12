@@ -26,6 +26,7 @@ public class BoxDetector : MonoBehaviour
         _charState = GetComponent<CharacterState>();
         if (boxLayer == default)
             boxLayer = LayerMask.GetMask("Shared");
+        
     }
 
     private void OnEnable()
@@ -50,14 +51,23 @@ public class BoxDetector : MonoBehaviour
         if (_activeBoxContacts == null)
             _activeBoxContacts = new Dictionary<ScriptableBox, int>();
 
-        // Create a set to track boxes found this frame
         HashSet<ScriptableBox> boxesThisFrame = new();
+        Dictionary<ScriptableBox, Vector2> resolvedDirectionByBox = new();
+        Dictionary<ScriptableBox, int> scoreByBox = new();
 
-        // Cast in 4 directions
-        CastRayInDirection(Vector2.left, boxesThisFrame);
-        CastRayInDirection(Vector2.right, boxesThisFrame);
-        CastRayInDirection(Vector2.up, boxesThisFrame);
-        CastRayInDirection(Vector2.down, boxesThisFrame);
+        CastRayInDirection(Vector2.down, boxesThisFrame, resolvedDirectionByBox, scoreByBox);
+        CastRayInDirection(Vector2.up, boxesThisFrame, resolvedDirectionByBox, scoreByBox);
+        CastRayInDirection(Vector2.left, boxesThisFrame, resolvedDirectionByBox, scoreByBox);
+        CastRayInDirection(Vector2.right, boxesThisFrame, resolvedDirectionByBox, scoreByBox);
+
+        foreach (var kvp in resolvedDirectionByBox)
+        {
+            ScriptableBox box = kvp.Key;
+            if (box == null) continue;
+
+            _activeBoxContacts[box] = 1;
+            box.OnPlayerInteract(gameObject, kvp.Value);
+        }
 
         // Check for boxes that are no longer in contact
         List<ScriptableBox> boxesToRemove = new();
@@ -94,21 +104,34 @@ public class BoxDetector : MonoBehaviour
             if (box == null) continue;
             box.RefreshCollisionIgnore(gameObject, skin);
 
-            if (!box.CanStandOnBy(skin) || box.CanFallThroughBy(skin))
+            if (!box.CanStandOnBy(skin))
             {
                 box.EvictPlayer(gameObject);
             }
         }
+
+        ScriptableBox[] allBoxes = FindObjectsByType<ScriptableBox>(FindObjectsInactive.Exclude);
+        foreach (ScriptableBox box in allBoxes)
+        {
+            if (box == null) continue;
+            box.RefreshVisibility(skin);
+        }
     }
 
-    private void CastRayInDirection(Vector2 direction, HashSet<ScriptableBox> boxesThisFrame)
+    private void CastRayInDirection(
+        Vector2 direction,
+        HashSet<ScriptableBox> boxesThisFrame,
+        Dictionary<ScriptableBox, Vector2> resolvedDirectionByBox,
+        Dictionary<ScriptableBox, int> scoreByBox)
     {
-        Vector2 origin = _col != null ? _col.bounds.center : _rb.position;
-        Vector2 extents = _col != null ? _col.bounds.extents : Vector2.one * 0.5f;
-        float raycastDistance = direction.x != 0f ? extents.x + raycastPadding : extents.y + raycastPadding;
+        if (_col == null)
+            return;
 
-        RaycastHit2D hit = Physics2D.Raycast(origin, direction, raycastDistance, boxLayer);
+        Vector2 origin = _col.bounds.center;
+        Vector2 size = _col.bounds.size;
 
+        // Probe only a thin slice just beyond the player's collider face in the requested direction.
+        RaycastHit2D hit = Physics2D.BoxCast(origin, size, 0f, direction, raycastPadding, boxLayer);
         if (hit.collider == null)
             return;
 
@@ -116,13 +139,59 @@ public class BoxDetector : MonoBehaviour
         if (box == null)
             return;
 
-        // Track this box as active this frame
-        boxesThisFrame.Add(box);
-        
-        // Add/update to active contacts
-        _activeBoxContacts[box] = 1;
+        // Log detection details for debugging push/fall-through gating
+        PlayerSkinState skin = _charState != null ? _charState.current : default;
+        try
+        {
+            Debug.Log($"[BoxDetector] Detected box '{hit.collider.name}' dir={direction} skin={skin} canPush={box.CanBePushedBy(skin)} canPass={box.CanPassThroughBy(skin)}");
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning($"[BoxDetector] Detection log failed: {ex.Message}");
+        }
 
-        // Call OnPlayerInteract with the raycast direction
-        box.OnPlayerInteract(gameObject, direction);
+        // Track this box as active this frame and invoke interact once.
+        boxesThisFrame.Add(box);
+
+        int score = ScoreDirectionForBox(box, skin, direction);
+        if (!scoreByBox.TryGetValue(box, out int currentScore) || score > currentScore)
+        {
+            scoreByBox[box] = score;
+            resolvedDirectionByBox[box] = direction;
+        }
+    }
+
+    private int ScoreDirectionForBox(ScriptableBox box, PlayerSkinState skin, Vector2 direction)
+    {
+        bool isTop = direction == Vector2.down;
+        bool isSide = direction == Vector2.left || direction == Vector2.right;
+
+        if (isTop)
+        {
+            bool canStand = box.CanStandOnBy(skin);
+            bool canPass = box.CanPassThroughBy(skin);
+
+            // Only strongly prefer top when it represents a real standing/support interaction.
+            if (canStand && !canPass)
+                return 300;
+
+            return 120;
+        }
+
+        if (isSide)
+        {
+            bool canPush = box.CanBePushedBy(skin);
+            bool canKillOnPush = box.CanKillOnPushBy(skin);
+
+            if (canKillOnPush)
+                return 280;
+            if (canPush)
+                return 220;
+
+            return 180;
+        }
+
+        // Bottom/up contact is generally least useful for gameplay decisions.
+        return 100;
     }
 }

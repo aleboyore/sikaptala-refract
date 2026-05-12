@@ -59,6 +59,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   _player: {fileID: 0}
+  _playerPrefab: {fileID: 9211799820994990070, guid: 323c4d5f5bd366545b74527628d4b76d, type: 3}
   _levelNames:
   - Level 1
   - Level 2

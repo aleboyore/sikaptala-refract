@@ -3,11 +3,22 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
+#if UNITY_EDITOR
+    [SerializeField] private UnityEditor.SceneAsset gameManagerScene;
+#endif
+    [SerializeField] private string gameManagerSceneName = "GameManager";
+
     //start button
     public void PlayGame()
     {
-        // This loads the next scene in your Build list (Level 1)
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        if (string.IsNullOrWhiteSpace(gameManagerSceneName))
+        {
+            Debug.LogError("[MainMenu] GameManager scene name is not set.");
+            return;
+        }
+
+        Debug.Log($"[MainMenu] Loading scene '{gameManagerSceneName}'...");
+        SceneManager.LoadScene(gameManagerSceneName);
     }
 
     //Credits Button
@@ -24,5 +35,15 @@ public class MainMenu : MonoBehaviour
         // We add Debug.Log so you can see it working while testing inside the Unity Editor.
         Debug.Log("Game is Exiting...");
         Application.Quit();
+    }
+
+    private void OnValidate()
+    {
+#if UNITY_EDITOR
+        if (gameManagerScene != null)
+        {
+            gameManagerSceneName = gameManagerScene.name;
+        }
+#endif
     }
 }

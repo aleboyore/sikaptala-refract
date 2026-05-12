@@ -25,10 +25,14 @@ MonoBehaviour:
   veilKillsOnPush: 0
   shardCanPassThrough: 0
   veilCanPassThrough: 0
+  notVisibleToVeil: 0
+  notVisibleToShard: 0
   oneWayEnabled: 0
   pushLeftOnly: 0
   crushOnContact: 0
   killsOnTouch: 0
+  shardKillsOnTouch: 0
+  veilKillsOnTouch: 0
   respawnDelay: 0
   moveOnlyWhenGrounded: 0
   shardContactEffect: {fileID: 11400000, guid: 1af9b3bc8b2328c498f2309dc508814c, type: 2}

@@ -14,6 +14,9 @@ public class ScriptableBox : MonoBehaviour, ICheckpointRestorer
     Vector3 spawnPosition;
     readonly HashSet<GameObject> contactSet = new();
     readonly HashSet<GameObject> effectAppliedSet = new();
+    readonly HashSet<GameObject> _lockingPlayers = new();
+    
+    private RigidbodyConstraints2D _prevConstraints;
 
     public BoxBehaviorProfile Profile => profile;
 
@@ -51,40 +54,51 @@ public class ScriptableBox : MonoBehaviour, ICheckpointRestorer
         rb.linearDamping = profile.linearDamping;
     }
 
-    public bool CanStandOnBy(PlayerSkinState skin)
+    public bool CanStandOnBy(PlayerSkinState playerState)
     {
         if (profile == null) return true;
-        return skin == PlayerSkinState.Shard ? profile.shardCanStandOn : profile.veilCanStandOn;
+        return playerState == PlayerSkinState.Shard ? profile.shardCanStandOn : profile.veilCanStandOn;
     }
 
-    public bool CanBePushedBy(PlayerSkinState skin)
+    public bool CanBePushedBy(PlayerSkinState playerState)
     {
-        if (profile == null) return skin == PlayerSkinState.Shard;
-        return skin == PlayerSkinState.Shard ? profile.shardCanPush : profile.veilCanPush;
+        if (profile == null) return playerState == PlayerSkinState.Shard;
+        return playerState == PlayerSkinState.Shard ? profile.shardCanPush : profile.veilCanPush;
     }
 
-    public bool CanPassThroughBy(PlayerSkinState skin)
-    {
-        if (profile == null) return false;
-        return skin == PlayerSkinState.Shard ? profile.shardCanPassThrough : profile.veilCanPassThrough;
-    }
-
-    public bool CanFallThroughBy(PlayerSkinState skin)
+    public bool CanPassThroughBy(PlayerSkinState playerState)
     {
         if (profile == null) return false;
-        return skin == PlayerSkinState.Shard ? profile.shardCanFallThrough : profile.veilCanFallThrough;
+        return playerState == PlayerSkinState.Shard ? profile.shardCanPassThrough : profile.veilCanPassThrough;
     }
 
-    public bool CanKillOnPushBy(PlayerSkinState skin)
+    public bool IsNotVisibleToSkinState(PlayerSkinState playerState)
     {
         if (profile == null) return false;
-        return skin == PlayerSkinState.Shard ? profile.shardKillsOnPush : profile.veilKillsOnPush;
+        return playerState == PlayerSkinState.Shard ? profile.notVisibleToShard : profile.notVisibleToVeil;
     }
 
-    public PowerupEffect GetContactEffect(PlayerSkinState skin)
+    public bool CanKillOnPushBy(PlayerSkinState playerState)
+    {
+        if (profile == null) return false;
+        return playerState == PlayerSkinState.Shard ? profile.shardKillsOnPush : profile.veilKillsOnPush;
+    }
+
+    public bool KillsOnTouchBy(PlayerSkinState playerState)
+    {
+        if (profile == null) return false;
+
+        bool perSkinKill = playerState == PlayerSkinState.Shard
+            ? profile.shardKillsOnTouch
+            : profile.veilKillsOnTouch;
+
+        return profile.killsOnTouch || perSkinKill;
+    }
+
+    public PowerupEffect GetContactEffect(PlayerSkinState playerState)
     {
         if (profile == null) return null;
-        return skin == PlayerSkinState.Shard ? profile.shardContactEffect : profile.veilContactEffect;
+        return playerState == PlayerSkinState.Shard ? profile.shardContactEffect : profile.veilContactEffect;
     }
 
     public bool IsOneWayDirectionValid(Vector2 direction)
@@ -134,34 +148,61 @@ public class ScriptableBox : MonoBehaviour, ICheckpointRestorer
         CharacterState charState = player.GetComponent<CharacterState>();
         if (charState == null) return;
 
-        PlayerSkinState skin = charState.current;
-        RefreshCollisionIgnore(player, skin);
+        PlayerSkinState playerState = charState.current;
+        bool canPassThrough = CanPassThroughBy(playerState);
+        bool canPush = CanBePushedBy(playerState);
+        bool canKillOnPush = CanKillOnPushBy(playerState);
+        bool killsOnTouch = KillsOnTouchBy(playerState);
+        bool isTopContact = pushDir == Vector2.down;
+        bool isSideContact = pushDir == Vector2.left || pushDir == Vector2.right;
+
+        RefreshCollisionIgnore(player, playerState);
+        RefreshVisibility(playerState);
+        Debug.Log($"[ScriptableBox] OnPlayerInteract '{gameObject.name}' player={player.name} playerState={playerState} pushDir={pushDir} canPassThrough={CanPassThroughBy(playerState)} canPush={CanBePushedBy(playerState)} oneWayOk={IsOneWayDirectionValid(pushDir)}");
 
         // Kill-on-touch (no push involved)
-        if (profile.killsOnTouch)
+        if (killsOnTouch)
         {
             GameManager.Instance?.TriggerDeath();
             return;
         }
 
-        // Pass-through — player ignores this box for the current contact
-        if (CanPassThroughBy(skin)) return;
+        // Kill-on-push can still trigger on side contact even when pass-through is enabled.
+        if (isSideContact && canKillOnPush)
+        {
+            Debug.Log($"[ScriptableBox] Kill-on-push triggered by '{gameObject.name}' for player={player.name} playerState={playerState} (before push resolution)");
+            GameManager.Instance?.TriggerDeath();
+            return;
+        }
 
-        bool canFallThrough = CanFallThroughBy(skin);
+        // Pass-through — player ignores this box for the current contact
+        if (canPassThrough)
+            return;
 
         // If the player is standing on top of this box AND can stand on it, parent them so they move with it.
-        if (!canFallThrough && pushDir == Vector2.down && CanStandOnBy(skin))
+        if (isTopContact && CanStandOnBy(playerState))
         {
             player.transform.SetParent(transform, true);
             player.GetComponent<PlayerController>()?.SetGroundSupport(transform);
         }
 
-        // Push — allow push from the sides even if the player cannot stand on this box.
-        if (pushDir != Vector2.down && CanBePushedBy(skin) && IsOneWayDirectionValid(pushDir))
+        if ((isSideContact || isTopContact) && !canPush)
+        {
+            LockForPlayer(player);
+        }
+        else
+        {
+            ReleaseLockForPlayer(player);
+        }
+
+        if (isSideContact && canPush && IsOneWayDirectionValid(pushDir))
+        {
+            Debug.Log($"[ScriptableBox] Applying push to '{gameObject.name}' dir={pushDir}");
             ReceivePush(pushDir, 10f);
+        }
 
         // Contact effect behavior depends on profile: repeat every interact tick, or once per contact.
-        PowerupEffect fx = GetContactEffect(skin);
+        PowerupEffect fx = GetContactEffect(playerState);
         if (fx != null)
         {
             if (profile.contactEffectRepeats)
@@ -179,8 +220,11 @@ public class ScriptableBox : MonoBehaviour, ICheckpointRestorer
         }
 
         // Crush: if box is moving fast at the player after a push
-        if (profile.crushOnContact && rb.linearVelocity.magnitude > 5f)
+        if (profile.crushOnContact && rb != null && rb.linearVelocity.magnitude > 5f)
+        {
+            Debug.Log($"[ScriptableBox] Crush triggered on '{gameObject.name}' velocity={rb.linearVelocity.magnitude}");
             GameManager.Instance?.TriggerDeath();
+        }
     }
 
     /// <summary>
@@ -191,14 +235,16 @@ public class ScriptableBox : MonoBehaviour, ICheckpointRestorer
     {
         contactSet.Remove(player);
         effectAppliedSet.Remove(player);
+        ReleaseLockForPlayer(player);
 
         if (player.transform.parent == transform)
             player.transform.SetParent(null, true);
 
         player.GetComponent<PlayerController>()?.ClearGroundSupport(transform);
         CharacterState charState = player.GetComponent<CharacterState>();
-        RefreshCollisionIgnore(player, charState != null ? charState.current : PlayerSkinState.Shard);
-        
+        PlayerSkinState playerState = charState != null ? charState.current : PlayerSkinState.Shard;
+        RefreshCollisionIgnore(player, playerState);
+        RefreshVisibility(playerState);
         // Clear one-shot effects so they can reapply if player walks back onto box
         EffectTracker tracker = player.GetComponent<EffectTracker>();
         if (tracker != null)
@@ -209,7 +255,7 @@ public class ScriptableBox : MonoBehaviour, ICheckpointRestorer
         }
     }
 
-    public void RefreshCollisionIgnore(GameObject player, PlayerSkinState skin)
+    public void RefreshCollisionIgnore(GameObject player, PlayerSkinState playerState)
     {
         if (player == null) return;
         if (boxCollider == null) boxCollider = GetComponent<BoxCollider2D>();
@@ -217,21 +263,27 @@ public class ScriptableBox : MonoBehaviour, ICheckpointRestorer
         Collider2D playerCollider = player.GetComponent<Collider2D>();
         if (playerCollider == null || boxCollider == null) return;
 
-        bool shouldIgnore = CanPassThroughBy(skin);
-
-        if (!shouldIgnore && CanFallThroughBy(skin))
-        {
-            Rigidbody2D playerRb = player.GetComponent<Rigidbody2D>();
-            Bounds playerBounds = playerCollider.bounds;
-            Bounds boxBounds = boxCollider.bounds;
-            shouldIgnore = playerRb != null
-                && playerRb.linearVelocity.y < -0.1f
-                && playerBounds.center.y >= boxBounds.min.y
-                && playerBounds.max.x > boxBounds.min.x
-                && playerBounds.min.x < boxBounds.max.x;
-        }
+        bool shouldIgnore = CanPassThroughBy(playerState);
 
         Physics2D.IgnoreCollision(playerCollider, boxCollider, shouldIgnore);
+        Debug.Log($"[ScriptableBox] RefreshCollisionIgnore '{gameObject.name}' player={player.name} playerState={playerState} shouldIgnore={shouldIgnore}");
+    }
+
+    public void RefreshVisibility(PlayerSkinState playerState)
+    {
+        if (profile == null) return;
+
+        bool isNotVisible = IsNotVisibleToSkinState(playerState);
+        SpriteRenderer[] spriteRenderers = GetComponentsInChildren<SpriteRenderer>(true);
+        if (spriteRenderers == null || spriteRenderers.Length == 0) return;
+
+        foreach (SpriteRenderer spriteRenderer in spriteRenderers)
+        {
+            if (spriteRenderer != null)
+                spriteRenderer.enabled = !isNotVisible;
+        }
+
+        Debug.Log($"[ScriptableBox] RefreshVisibility '{gameObject.name}' playerState={playerState} isNotVisible={isNotVisible}");
     }
 
     /// <summary>
@@ -242,10 +294,40 @@ public class ScriptableBox : MonoBehaviour, ICheckpointRestorer
     {
         if (player == null) return;
 
+        ReleaseLockForPlayer(player);
+
         if (player.transform.parent == transform)
             player.transform.SetParent(null, true);
 
         player.GetComponent<PlayerController>()?.ClearGroundSupport(transform);
+    }
+
+    private void LockForPlayer(GameObject player)
+    {
+        if (player == null || rb == null) return;
+
+        if (_lockingPlayers.Add(player))
+        {
+            if (_lockingPlayers.Count == 1)
+                _prevConstraints = rb.constraints;
+
+            rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
+            Debug.Log($"[ScriptableBox] Locked '{gameObject.name}' horizontally for {player.name}");
+        }
+    }
+
+    private void ReleaseLockForPlayer(GameObject player)
+    {
+        if (player == null || rb == null) return;
+
+        if (!_lockingPlayers.Remove(player))
+            return;
+
+        if (_lockingPlayers.Count == 0)
+        {
+            rb.constraints = _prevConstraints;
+            Debug.Log($"[ScriptableBox] Restored constraints for '{gameObject.name}' after {player.name} released the last lock");
+        }
     }
 
     private bool IsGrounded()

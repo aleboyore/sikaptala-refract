@@ -7,11 +7,13 @@ public class GameManager : MonoBehaviour
 	public static GameManager Instance { get; private set; }
 
 	[SerializeField] private PlayerController _player;
+	[SerializeField] private GameObject _playerPrefab;
 	[SerializeField] private List<string> _levelNames; // List of all level names in order
 	private int _currentLevelIndex = 0;
 
-	private int _lastRestoredCheckpointRevision = -1;
+	private bool _isProcessingDeath = false;
 	private Vector3 _levelOriginalSpawnPoint = Vector3.zero; // Original spawn point for current level
+	private bool _hasLoadedFirstLevel = false;
 
 	private void Awake() {
         if (Instance == null)
@@ -43,6 +45,16 @@ public class GameManager : MonoBehaviour
 		SceneManager.sceneLoaded += OnSceneLoaded;
 	}
 
+	private void Start()
+	{
+		// Load the first level if this is the first time GameManager is initialized
+		if (!_hasLoadedFirstLevel && _currentLevelIndex == 0)
+		{
+			_hasLoadedFirstLevel = true;
+			LoadFirstLevel();
+		}
+	}
+
 	private void OnDestroy()
 	{
 		SceneManager.sceneLoaded -= OnSceneLoaded;
@@ -50,17 +62,6 @@ public class GameManager : MonoBehaviour
 
 	private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
 	{
-		// If player isn't set (or was destroyed during scene unload), try to find it in the newly loaded scene
-		if (_player == null)
-		{
-			_player = FindAnyObjectByType<PlayerController>();
-			if (_player != null)
-			{
-				RegisterPlayer(_player);
-				Debug.Log($"[GameManager] Auto-registered PlayerController on scene load '{scene.name}' -> '{_player.gameObject.name}'");
-			}
-		}
-		
 		// Find the level's original spawn point
 		var spawnPoint = FindAnyObjectByType<PlayerSpawnPoint>();
 		if (spawnPoint != null)
@@ -72,6 +73,42 @@ public class GameManager : MonoBehaviour
 		{
 			Debug.LogWarning($"[GameManager] No PlayerSpawnPoint found in level '{scene.name}' - level spawn will default to zero");
 			_levelOriginalSpawnPoint = Vector3.zero;
+		}
+
+		// If player isn't set (or was destroyed during scene unload), try to find it in the newly loaded scene.
+		// If no scene player exists, spawn one from the configured prefab.
+		if (_player == null)
+		{
+			_player = FindAnyObjectByType<PlayerController>();
+			if (_player != null)
+			{
+				RegisterPlayer(_player);
+				Debug.Log($"[GameManager] Auto-registered PlayerController on scene load '{scene.name}' -> '{_player.gameObject.name}'");
+			}
+			else if (_playerPrefab != null)
+			{
+				Vector3 spawnPosition = spawnPoint != null ? spawnPoint.transform.position : _levelOriginalSpawnPoint;
+				GameObject spawnedPlayer = Instantiate(_playerPrefab, spawnPosition, Quaternion.identity);
+				_player = spawnedPlayer.GetComponent<PlayerController>();
+				if (_player != null)
+				{
+					RegisterPlayer(_player);
+					Debug.Log($"[GameManager] Spawned player prefab '{_playerPrefab.name}' at x = {spawnPosition.x}, y = {spawnPosition.y} for scene '{scene.name}'");
+				}
+				else
+				{
+					Debug.LogError($"[GameManager] Spawned player prefab '{_playerPrefab.name}' but no PlayerController component was found on it");
+				}
+			}
+			else
+			{
+				Debug.LogWarning($"[GameManager] No PlayerController found and no player prefab assigned for scene '{scene.name}'");
+			}
+		}
+
+		if (CheckpointManager.Instance != null)
+		{
+			StartCoroutine(CaptureInitialSnapshotNextFrame());
 		}
 	}
 
@@ -90,24 +127,43 @@ public class GameManager : MonoBehaviour
 
 	public void TriggerDeath()
 	{
-		if (_player == null) return;
+		if (_player == null)
+		{
+			if (_playerPrefab == null) return;
+
+			Vector3 prefabSpawnPos = CheckpointManager.Instance != null && CheckpointManager.Instance.CheckpointRevision > 0
+				? CheckpointManager.Instance.PlayerPosition
+				: _levelOriginalSpawnPoint;
+
+			GameObject spawnedPlayer = Instantiate(_playerPrefab, prefabSpawnPos, Quaternion.identity);
+			spawnedPlayer.SetActive(true);
+			_player = spawnedPlayer.GetComponent<PlayerController>();
+			if (_player != null)
+			{
+				RegisterPlayer(_player);
+				Debug.Log($"[GameManager] Respawned player prefab '{_playerPrefab.name}' at x = {prefabSpawnPos.x}, y = {prefabSpawnPos.y}");
+			}
+			else
+			{
+				Debug.LogError($"[GameManager] Respawned player prefab '{_playerPrefab.name}' but no PlayerController component was found on it");
+			}
+			_isProcessingDeath = false;
+			return;
+		}
+		if (_isProcessingDeath) return;
 
 		// Check if player can actually die (shields/invulnerability)
 		if (!_player.CanDie()) return;
 
 		if (CheckpointManager.Instance == null) return;
 
-		// Prevent duplicate restore for the same checkpoint revision
+		_isProcessingDeath = true;
 		int currentRevision = CheckpointManager.Instance.CheckpointRevision;
-		if (_lastRestoredCheckpointRevision == currentRevision)
-		{
-			Debug.Log("[GameManager] Death restore skipped — already restored for current checkpoint revision.");
-			return;
-		}
 
 		Debug.Log($"[GameManager] Death triggered. Restoring to checkpoint at {CheckpointManager.Instance.PlayerPosition} (rev {currentRevision})");
 
 		// Clear player effects before resetting position
+		_player.gameObject.SetActive(true);
 		_player.GetComponent<EffectTracker>()?.ClearAllEffects(_player.gameObject);
 
 		// Determine respawn position: use checkpoint if reached, otherwise use level's original spawn point
@@ -124,44 +180,46 @@ public class GameManager : MonoBehaviour
 		}
 
 		// Restore world objects (pickups, boxes) based on checkpoint snapshot
-		// Only if a checkpoint has actually been saved (revision > 0)
+		// If a checkpoint exists, restore from the snapshot. Otherwise, return all
+		// checkpoint-aware objects to their initial spawn state.
 		if (currentRevision > 0)
-		{
 			CheckpointManager.Instance.RestoreFromSnapshot();
-		}
+		else
+			CheckpointManager.Instance.RestoreInitialSnapshot();
 
-		_lastRestoredCheckpointRevision = currentRevision;
+		StartCoroutine(ClearDeathProcessingNextFrame());
 	}
 
-	/// <summary>
-	/// Restores all world objects to their checkpoint state.
-	/// Objects created after the checkpoint are deactivated/removed; objects from the checkpoint are restored.
-	/// </summary>
-	private void RestoreCheckpointWorldState()
+	private System.Collections.IEnumerator ClearDeathProcessingNextFrame()
 	{
-		var checkpointObjects = CheckpointManager.Instance.GetCheckpointObjects();
-		var allRestorers = Resources.FindObjectsOfTypeAll<MonoBehaviour>();
-		
-		foreach (var obj in allRestorers)
-		{
-			if (obj is not ICheckpointRestorer restorer) continue;
-			
-			if (checkpointObjects.Contains(obj.gameObject))
-			{
-				// Object existed at checkpoint: restore it
-				restorer.RestoreToCheckpoint();
-			}
-			else
-			{
-				// Object created after checkpoint: deactivate it
-				restorer.RevertPostCheckpoint();
-			}
-		}
-		
-		Debug.Log("[GameManager] World state restored to checkpoint");
+		yield return null;
+		_isProcessingDeath = false;
+	}
+
+	private System.Collections.IEnumerator CaptureInitialSnapshotNextFrame()
+	{
+		yield return null;
+
+		if (CheckpointManager.Instance == null)
+			yield break;
+
+		CheckpointManager.Instance.CaptureInitialSnapshot(_levelOriginalSpawnPoint);
 	}
 
 	
+	private void LoadFirstLevel()
+	{
+		if (_levelNames == null || _levelNames.Count == 0)
+		{
+			Debug.LogWarning("[GameManager] Level names list is empty or not set in Inspector");
+			return;
+		}
+
+		string firstLevel = _levelNames[0];
+		Debug.Log($"[GameManager] Loading first level: {firstLevel} (index 0)");
+		SceneManager.LoadScene(firstLevel);
+	}
+
 	private void LoadNextLevel()
 	{
 		if (_levelNames == null || _levelNames.Count == 0)

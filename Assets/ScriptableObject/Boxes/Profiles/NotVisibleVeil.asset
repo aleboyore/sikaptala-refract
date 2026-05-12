@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cc8dafa8a0b8a084dac273c2215d7249, type: 3}
-  m_Name: New Box Behavior Profile
+  m_Name: NotVisibleVeil
   m_EditorClassIdentifier: Assembly-CSharp::BoxBehaviorProfile
   gravityScale: 1
   linearDamping: 8
@@ -18,19 +18,21 @@ MonoBehaviour:
   returnToRestSpeed: 0
   allowVerticalMovement: 1
   shardCanStandOn: 1
-  veilCanStandOn: 0
+  veilCanStandOn: 1
   shardCanPush: 0
-  veilCanPush: 1
+  veilCanPush: 0
   shardKillsOnPush: 0
   veilKillsOnPush: 0
   shardCanPassThrough: 0
   veilCanPassThrough: 0
-  shardCanFallThrough: 0
-  veilCanFallThrough: 1
+  notVisibleToVeil: 1
+  notVisibleToShard: 0
   oneWayEnabled: 0
   pushLeftOnly: 0
   crushOnContact: 0
   killsOnTouch: 0
+  shardKillsOnTouch: 0
+  veilKillsOnTouch: 0
   respawnDelay: 0
   moveOnlyWhenGrounded: 0
   shardContactEffect: {fileID: 0}

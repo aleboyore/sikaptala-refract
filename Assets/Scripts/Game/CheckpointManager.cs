@@ -25,6 +25,9 @@ public class CheckpointManager : MonoBehaviour
 	public Vector3 PlayerPosition { get; private set; }
 	public int CheckpointRevision { get; private set; } = 0;
 
+	private CheckpointSnapshot _initialSnapshot;
+	private bool _hasInitialSnapshot = false;
+
 	// Snapshot stored for the current checkpoint (in-memory and optional JSON on disk)
 	private CheckpointSnapshot _currentSnapshot;
 
@@ -112,6 +115,20 @@ public class CheckpointManager : MonoBehaviour
 	}
 
 	/// <summary>
+	/// Captures the scene's initial spawn state so a death before any checkpoint
+	/// can restore the world exactly as it was when the level loaded.
+	/// </summary>
+	public void CaptureInitialSnapshot(Vector3 playerPos)
+	{
+		if (_hasInitialSnapshot)
+			return;
+
+		_initialSnapshot = CaptureSnapshot(0, playerPos);
+		_hasInitialSnapshot = true;
+		Debug.Log($"[Checkpoint] Captured initial spawn snapshot at {playerPos}");
+	}
+
+	/// <summary>
 	/// Restore world state using the saved snapshot for the current checkpoint.
 	/// If no snapshot exists, this is a no-op.
 	/// </summary>
@@ -168,6 +185,109 @@ public class CheckpointManager : MonoBehaviour
 				}
 			}
 		}
+	}
+
+	/// <summary>
+	/// Restore world state back to the initial spawn snapshot.
+	/// Used when the player dies before reaching any checkpoint.
+	/// </summary>
+	public void RestoreInitialSnapshot()
+	{
+		if (!_hasInitialSnapshot || _initialSnapshot == null)
+		{
+			Debug.LogWarning("[Checkpoint] No initial snapshot to restore from");
+			return;
+		}
+
+		RestoreSnapshot(_initialSnapshot, "initial spawn");
+	}
+
+	private CheckpointSnapshot CaptureSnapshot(int revision, Vector3 playerPos)
+	{
+		var snapshot = new CheckpointSnapshot
+		{
+			revision = revision,
+			sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name,
+			playerPosition = playerPos,
+			entries = new List<CheckpointEntry>()
+		};
+
+		var identities = Resources.FindObjectsOfTypeAll<CheckpointIdentity>();
+		foreach (var id in identities)
+		{
+			var go = id.gameObject;
+			snapshot.entries.Add(new CheckpointEntry
+			{
+				id = id.Id,
+				prefabName = id.PrefabName,
+				active = go.activeInHierarchy,
+				position = go.transform.position,
+				rotation = go.transform.rotation.eulerAngles,
+				scale = go.transform.localScale
+			});
+		}
+
+		var playerCtrl = FindAnyObjectByType<PlayerController>();
+		if (playerCtrl != null)
+		{
+			var tracker = playerCtrl.GetComponent<EffectTracker>();
+			if (tracker != null)
+			{
+				snapshot.playerEffects = tracker.CaptureState();
+			}
+		}
+
+		return snapshot;
+	}
+
+	private void RestoreSnapshot(CheckpointSnapshot snapshot, string label)
+	{
+		if (snapshot == null)
+		{
+			Debug.LogWarning($"[Checkpoint] No {label} snapshot to restore from");
+			return;
+		}
+
+		var lookup = new Dictionary<string, CheckpointEntry>();
+		foreach (var e in snapshot.entries)
+			lookup[e.id] = e;
+
+		var identities = Resources.FindObjectsOfTypeAll<CheckpointIdentity>();
+		foreach (var id in identities)
+		{
+			var go = id.gameObject;
+			if (lookup.TryGetValue(id.Id, out var entry))
+			{
+				go.SetActive(entry.active);
+				go.transform.position = entry.position;
+				go.transform.rotation = Quaternion.Euler(entry.rotation);
+				go.transform.localScale = entry.scale;
+
+				var restorer = go.GetComponent<ICheckpointRestorer>();
+				restorer?.RestoreToCheckpoint();
+			}
+			else
+			{
+				go.SetActive(false);
+				var restorer = go.GetComponent<ICheckpointRestorer>();
+				restorer?.RevertPostCheckpoint();
+			}
+		}
+
+		if (snapshot.playerEffects != null && snapshot.playerEffects.Count > 0)
+		{
+			var playerCtrl = FindAnyObjectByType<PlayerController>();
+			if (playerCtrl != null)
+			{
+				var tracker = playerCtrl.GetComponent<EffectTracker>();
+				if (tracker != null)
+				{
+					tracker.RestoreState(snapshot.playerEffects, playerCtrl.gameObject);
+				}
+			}
+		}
+
+		Debug.Log($"[Checkpoint] Restored world state from {label} snapshot rev {snapshot.revision}");
 	}
 
 	/// <summary>

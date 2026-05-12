@@ -26,9 +26,9 @@ public class BoxBehaviorProfile : ScriptableObject
     public bool shardCanPassThrough = false;
     public bool veilCanPassThrough = false;
 
-    [Header("Fall Through")]
-    public bool shardCanFallThrough = false;
-    public bool veilCanFallThrough = false;
+    [Header("Visibility")]
+    public bool notVisibleToVeil = false;  // if true, sprite hidden when Veil skin is active
+    public bool notVisibleToShard = false; // if true, sprite hidden when Shard skin is active
 
     [Header("One-Way Push")]
     public bool oneWayEnabled = false;
@@ -37,6 +37,8 @@ public class BoxBehaviorProfile : ScriptableObject
     [Header("Crush & Respawn")]
     public bool crushOnContact = false;  // kills player on any collision
     public bool killsOnTouch = false;    // kills on contact, separate from push
+    public bool shardKillsOnTouch = false;
+    public bool veilKillsOnTouch = false;
     public float respawnDelay = 0f;      // 0 = no respawn, >0 = respawn after N seconds
 
     [Header("Movement Restrictions")]

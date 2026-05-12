@@ -133,6 +133,7 @@ public class PlayerController : MonoBehaviour
                     _bufferedJumpUsable = true;
                     _endedJumpEarly = false;
                     _airJumpsRemaining = _airJumpsAllowed;
+                    Debug.Log($"[PlayerController] Grounded true for '{gameObject.name}' (supportedByBox={supportedByBox})");
                     RaiseGroundedChanged(true, Mathf.Abs(_frameVelocity.y));
                 }
             }
@@ -140,6 +141,7 @@ public class PlayerController : MonoBehaviour
             {
                 _grounded = false;
                 _frameLeftGrounded = _time;
+                Debug.Log($"[PlayerController] Grounded false for '{gameObject.name}'");
                 RaiseGroundedChanged(false, 0);
             }
 
@@ -430,6 +432,8 @@ public class PlayerController : MonoBehaviour
             _endedJumpEarly = false;
             _frameVelocity.y = 0f;
 
+            Debug.Log($"[PlayerController] ForceGrounded called for '{gameObject.name}' support={_groundSupport?.name}");
+
             _characterState?.SetAnimBool("isJump", false);
             _characterState?.SetAnimBool("isFalling", false);
             RaiseGroundedChanged(true, 0f);
@@ -438,13 +442,17 @@ public class PlayerController : MonoBehaviour
         public void SetGroundSupport(Transform support)
         {
             _groundSupport = support;
+            Debug.Log($"[PlayerController] SetGroundSupport: player={gameObject.name} support={support?.name}");
             ForceGrounded();
         }
 
         public void ClearGroundSupport(Transform support)
         {
             if (_groundSupport == support)
+            {
                 _groundSupport = null;
+                Debug.Log($"[PlayerController] ClearGroundSupport: player={gameObject.name} cleared support={support?.name}");
+            }
         }
 
         public void GrantShield()

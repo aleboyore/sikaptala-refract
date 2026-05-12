@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &4953737758958704853
+--- !u!1 &161277086283094201
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,42 +8,42 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5048655495910466772}
-  - component: {fileID: 1018651678741885359}
-  - component: {fileID: 4683048063901641769}
-  - component: {fileID: 7176848516374659814}
-  - component: {fileID: 6172038283402249191}
-  - component: {fileID: 1488740973486424418}
+  - component: {fileID: 702397102919059980}
+  - component: {fileID: 8637096164283656929}
+  - component: {fileID: 5303590074948112711}
+  - component: {fileID: 5610261101558292167}
+  - component: {fileID: 5731082952109854411}
+  - component: {fileID: 193844397171092996}
   m_Layer: 14
-  m_Name: NullVeil
+  m_Name: NotVisibleShard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5048655495910466772
+--- !u!4 &702397102919059980
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4953737758958704853}
+  m_GameObject: {fileID: 161277086283094201}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -13.41, y: 3.6149902, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &1018651678741885359
+--- !u!212 &8637096164283656929
 SpriteRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4953737758958704853}
+  m_GameObject: {fileID: 161277086283094201}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -86,7 +86,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 280a0d95a4efe8742b4e356f172fa7df, type: 3}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.39215687, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -95,14 +95,14 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!50 &4683048063901641769
+--- !u!50 &5303590074948112711
 Rigidbody2D:
   serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4953737758958704853}
+  m_GameObject: {fileID: 161277086283094201}
   m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
@@ -122,13 +122,13 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 0
---- !u!61 &7176848516374659814
+--- !u!61 &5610261101558292167
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4953737758958704853}
+  m_GameObject: {fileID: 161277086283094201}
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
@@ -168,30 +168,30 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &6172038283402249191
+--- !u!114 &5731082952109854411
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4953737758958704853}
+  m_GameObject: {fileID: 161277086283094201}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4d95aff9172236a409e84eccf96063d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScriptableBox
-  profile: {fileID: 11400000, guid: a43d32601c4e5fb4185b1a7d0de8f638, type: 2}
---- !u!114 &1488740973486424418
+  profile: {fileID: 11400000, guid: 6b26d895bf5570646a765d261811fa63, type: 2}
+--- !u!114 &193844397171092996
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4953737758958704853}
+  m_GameObject: {fileID: 161277086283094201}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c4314d1ef16fecf42a1afece15271f21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheckpointIdentity
-  id: a969c854-3715-40f1-be77-17ecaafe4967
-  PrefabName: NullVeil
+  id: 1d5a9b35-0caa-49f9-97a0-965f6d5ebaa1
+  PrefabName: DefaultBox
