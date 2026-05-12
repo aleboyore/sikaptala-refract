@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4683048063901641769}
   - component: {fileID: 7176848516374659814}
   - component: {fileID: 6172038283402249191}
+  - component: {fileID: 1488740973486424418}
   m_Layer: 14
   m_Name: NullVeil
   m_TagString: Untagged
@@ -180,3 +181,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScriptableBox
   profile: {fileID: 11400000, guid: a43d32601c4e5fb4185b1a7d0de8f638, type: 2}
+--- !u!114 &1488740973486424418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4953737758958704853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4314d1ef16fecf42a1afece15271f21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CheckpointIdentity
+  id: a969c854-3715-40f1-be77-17ecaafe4967
+  PrefabName: NullVeil

@@ -69,7 +69,7 @@ public class EffectUIController : MonoBehaviour
     void UpdateUI()
     {
         var active = _tracker.GetDisplayedEffects();
-        Debug.Log($"[UI] Active effects: {active.Count}");
+        // Debug.Log($"[UI] Active effects: {active.Count}");
 
         if (active.Count == 0)
         {
@@ -78,7 +78,7 @@ public class EffectUIController : MonoBehaviour
             if (effectText != null) effectText.text = "Effect: ---";
             if (durationText != null) durationText.text = "Duration: ---";
             if (countText != null) countText.text = "Count: ---";
-            Debug.Log("[UI] No active effects, showing placeholders");
+            // Debug.Log("[UI] No active effects, showing placeholders");
             return;
         }
 
@@ -87,7 +87,7 @@ public class EffectUIController : MonoBehaviour
         var effect = entry.effect;
         var runner = entry.runner;
         
-        Debug.Log($"[UI] Effect: {(effect != null ? effect.name : "NULL")} | Display name: {(effect != null ? effect.GetDisplayName() : "NULL")} | Count: {(effect != null ? effect.GetCountDisplayText(_controller) : "NULL")}");
+        // Debug.Log($"[UI] Effect: {(effect != null ? effect.name : "NULL")} | Display name: {(effect != null ? effect.GetDisplayName() : "NULL")} | Count: {(effect != null ? effect.GetCountDisplayText(_controller) : "NULL")}");
 
         if (effectIcon != null) effectIcon.enabled = effect != null && effect.Sprite != null;
         if (effectIcon != null && effect != null && effect.Sprite != null) effectIcon.sprite = effect.Sprite;
@@ -99,7 +99,7 @@ public class EffectUIController : MonoBehaviour
             if (_animator != null && effect != null && effect.SpriteAnimation != null)
             {
                 ApplyAnimationClip(_animator, effect.SpriteAnimation, effect.AnimationSpeed);
-                Debug.Log($"[UI] Applied animation: {effect.SpriteAnimation.name} at speed {effect.AnimationSpeed}");
+                // Debug.Log($"[UI] Applied animation: {effect.SpriteAnimation.name} at speed {effect.AnimationSpeed}");
             }
         }
 
@@ -107,11 +107,11 @@ public class EffectUIController : MonoBehaviour
         {
             string displayName = effect != null ? effect.GetDisplayName() : "Unknown";
             effectText.text = $"Effect: {displayName}";
-            Debug.Log($"[UI] Set effectText to: '{effectText.text}'");
+            // Debug.Log($"[UI] Set effectText to: '{effectText.text}'");
         }
         else
         {
-            Debug.LogWarning("[UI] effectText is NULL - UI will not update!");
+            // Debug.LogWarning("[UI] effectText is NULL - UI will not update!");
         }
 
         if (durationText != null)
@@ -121,7 +121,7 @@ public class EffectUIController : MonoBehaviour
                 float elapsed = Time.time - runner.startTime;
                 float remaining = Mathf.Max(0f, runner.totalDuration - elapsed);
                 durationText.text = $"Duration: {Mathf.CeilToInt(remaining)}";
-                Debug.Log($"[UI] Set durationText to: '{durationText.text}'");
+                // Debug.Log($"[UI] Set durationText to: '{durationText.text}'");
             }
             else
             {
@@ -130,18 +130,18 @@ public class EffectUIController : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("[UI] durationText is NULL!");
+            // Debug.LogWarning("[UI] durationText is NULL!");
         }
 
         if (countText != null)
         {
             string countDisplay = effect != null ? effect.GetCountDisplayText(_controller) : "---";
             countText.text = "Count: " + countDisplay;
-            Debug.Log($"[UI] Set countText to: '{countText.text}'");
+            // Debug.Log($"[UI] Set countText to: '{countText.text}'");
         }
         else
         {
-            Debug.LogWarning("[UI] countText is NULL!");
+            // Debug.LogWarning("[UI] countText is NULL!");
         }
     }
 
@@ -187,7 +187,7 @@ public class EffectUIController : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("[UI] No animation clips found in animator override controller");
+            // Debug.LogWarning("[UI] No animation clips found in animator override controller");
         }
     }
 }

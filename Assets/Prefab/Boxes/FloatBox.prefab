@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1068389140244185146}
   - component: {fileID: 6224331418178605521}
   - component: {fileID: 8891455032951240312}
+  - component: {fileID: 5020749442914415137}
   m_Layer: 14
   m_Name: FloatBox
   m_TagString: Untagged
@@ -180,3 +181,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScriptableBox
   profile: {fileID: 11400000, guid: d0836f1107540f545821d43b9a860eaa, type: 2}
+--- !u!114 &5020749442914415137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4350435197117902702}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4314d1ef16fecf42a1afece15271f21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CheckpointIdentity
+  id: 5be562c4-bc0d-4c1f-8285-7811ef31c826
+  PrefabName: FloatBox

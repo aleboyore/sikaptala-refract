@@ -69,6 +69,11 @@ public class PlayerController : MonoBehaviour
             if (_rb) _rb.gravityScale = 0;
             _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
             GroundedChanged += OnGroundedChanged;
+
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.RegisterPlayer(this);
+            }
         }
 
         private void OnDestroy()
@@ -229,14 +234,14 @@ public class PlayerController : MonoBehaviour
             GatherInput();
 
             // Lock-in detection uses raw actions to avoid movement conflicts
-            if (_col != null && InputHandler.Instance != null && InputHandler.Instance.Actions != null)
+            if (InputHandler.Instance != null && InputHandler.Instance.Actions != null && GameManager.Instance != null)
             {
                 if (_isOnDoor
                     && InputHandler.Instance.Actions.Gameplay.LockIn.WasPressedThisFrame()
                     && State == PlayerState.Normal)
                 {
                     EnterLockedInState();
-                    GameManager.Instance?.NotifyLockIn(this);
+                    GameManager.Instance.NotifyLockIn(this);
                 }
             }
         }
@@ -332,6 +337,7 @@ public class PlayerController : MonoBehaviour
 
             _fallMultiplier = 1f;
             transform.position = position;
+            Debug.Log($"[Player] ResetToCheckpoint to x = {position.x}, y = {position.y}");
             _airJumpsRemaining = _airJumpsAllowed;
             _jumpHeightMultiplier = 1f;
             _speedMultiplier = 1f;

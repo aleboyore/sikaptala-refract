@@ -59,6 +59,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   _player: {fileID: 0}
+  _levelNames:
+  - Level 1
+  - Level 2
+  - Level 3
+  - Level 4
+  - Level 5
 --- !u!114 &8418099032051202890
 MonoBehaviour:
   m_ObjectHideFlags: 0

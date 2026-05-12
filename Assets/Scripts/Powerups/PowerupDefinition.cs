@@ -14,6 +14,11 @@ public class PowerupDefinition : ScriptableObject
     [Header("Visuals")]
     public Sprite shardSprite;
     public Sprite veilSprite;
+    [Header("Animations")]
+    public AnimationClip shardAnimation;
+    public AnimationClip veilAnimation;
+    [Tooltip("Animation speed applied to the animation clips (applies to both shard/veil if set).")]
+    public float animationSpeed = 1f;
 
     [Header("Pickup")]
     public bool consumeWhenEffectMissing = true;
@@ -36,5 +41,15 @@ public class PowerupDefinition : ScriptableObject
         // Fallback: try to get sprite from effect itself
         PowerupEffect effect = GetEffect(state);
         return effect != null ? effect.Sprite : null;
+    }
+
+    public AnimationClip GetAnimation(PlayerSkinState state)
+    {
+        return state == PlayerSkinState.Shard ? shardAnimation : veilAnimation;
+    }
+
+    public float GetAnimationSpeed()
+    {
+        return animationSpeed;
     }
 }

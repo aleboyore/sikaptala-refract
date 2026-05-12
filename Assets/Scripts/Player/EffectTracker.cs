@@ -78,6 +78,105 @@ public class EffectTracker : MonoBehaviour
         return new List<(PowerupEffect, PowerupEffectRunner)>(_displayEffects);
     }
 
+    [System.Serializable]
+    public class SerializableEffectState
+    {
+        public string effectName;
+        public bool isOneShot;
+        // remaining time is optional; 0 = unknown/full
+        public float remainingTime;
+    }
+
+    /// <summary>
+    /// Capture a serializable snapshot of the currently active effects on this player.
+    /// </summary>
+    public List<SerializableEffectState> CaptureState()
+    {
+        var list = new List<SerializableEffectState>();
+
+        // Capture running timed effects
+        foreach (var (effect, runner) in _activeEffects)
+        {
+            if (effect == null) continue;
+            float remaining = 0f;
+            if (runner != null && runner.totalDuration > 0f)
+                remaining = Mathf.Max(0f, runner.totalDuration - (Time.time - runner.startTime));
+
+            list.Add(new SerializableEffectState
+            {
+                effectName = effect.name,
+                isOneShot = effect.oneShot,
+                remainingTime = remaining
+            });
+        }
+
+        // Capture one-shot effects that have been applied but have no runner
+        foreach (var pair in _displayEffects)
+        {
+            var effect = pair.effect;
+            var runner = pair.runner;
+            if (effect == null) continue;
+            if (runner == null && effect.oneShot)
+            {
+                // ensure we don't duplicate entries
+                if (!list.Exists(e => e.effectName == effect.name))
+                {
+                    list.Add(new SerializableEffectState
+                    {
+                        effectName = effect.name,
+                        isOneShot = true,
+                        remainingTime = 0f
+                    });
+                }
+            }
+        }
+
+        return list;
+    }
+
+    /// <summary>
+    /// Restore effects from a captured snapshot. This will clear existing effects, then re-apply by effect name.
+    /// Note: re-applied timed effects start fresh (or with remainingTime if > 0 when possible).
+    /// </summary>
+    public void RestoreState(List<SerializableEffectState> snapshot, GameObject player)
+    {
+        // Clear current effects
+        ClearAllEffects(player);
+
+        if (snapshot == null || snapshot.Count == 0) return;
+
+        // Find all PowerupEffect assets in project/scene
+        var allEffects = Resources.FindObjectsOfTypeAll<PowerupEffect>();
+
+        foreach (var s in snapshot)
+        {
+            if (string.IsNullOrEmpty(s.effectName)) continue;
+
+            var effect = System.Array.Find(allEffects, e => e != null && e.name == s.effectName);
+            if (effect == null)
+            {
+                Debug.LogWarning($"[EffectTracker] Could not find effect asset '{s.effectName}' to restore");
+                continue;
+            }
+
+            // Apply effect normally. Timed effects will start their own runner.
+            effect.Apply(player);
+
+            // If it's a one-shot, mark it as applied so it won't reapply
+            if (s.isOneShot)
+                MarkOneShotApplied(effect);
+        }
+    }
+
+    /// <summary>
+    /// Mark a one-shot effect as already applied for this tracker.
+    /// </summary>
+    public void MarkOneShotApplied(PowerupEffect effect)
+    {
+        if (effect != null && effect.oneShot)
+            _appliedOneShots.Add(effect);
+    }
+
     private void OnStateChanged(PlayerSkinState _)
     {
         // Iterate in reverse so we can safely remove while iterating

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8900738845983157718}
   - component: {fileID: 7369153234630630899}
   - component: {fileID: 1761648275426941184}
+  - component: {fileID: 2453938219414091821}
   m_Layer: 14
   m_Name: NullShard
   m_TagString: Untagged
@@ -180,3 +181,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScriptableBox
   profile: {fileID: 11400000, guid: a0b841a7c28d26e4dad71b2f082e41aa, type: 2}
+--- !u!114 &2453938219414091821
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1872928819759762413}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4314d1ef16fecf42a1afece15271f21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CheckpointIdentity
+  id: 59ff230a-cdd5-4e06-a8c7-c2e98e43f316
+  PrefabName: NullShard
