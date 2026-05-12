@@ -17,9 +17,19 @@ public class DoubleJumpEffect : PowerupEffect
 
     public override void Apply(GameObject player)
     {
+        Debug.Log($"[DoubleJumpEffect] Apply called with jumpCount={jumpCount}");
         PlayerController controller = player.GetComponent<PlayerController>();
-        if (controller == null) return;
+        if (controller == null) { Debug.LogWarning("[DoubleJumpEffect] No PlayerController found"); return; }
 
         controller.SetAirJumpCount(jumpCount);
+        EffectTracker tracker = player.GetComponent<EffectTracker>();
+        tracker?.RegisterEffect(this, null);
+        Debug.Log($"[DoubleJumpEffect] Registered effect, jumpCount now={jumpCount}");
+    }
+
+    public override string GetCountDisplayText(PlayerController controller)
+    {
+        if (controller == null) return jumpCount.ToString();
+        return controller.GetAirJumpsRemaining().ToString();
     }
 }

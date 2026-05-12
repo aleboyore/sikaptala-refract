@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Scale2X
   m_EditorClassIdentifier: Assembly-CSharp::ScaleCharacterEffect
   sprite: {fileID: 0}
+  spriteAnimation: {fileID: 0}
+  animationSpeed: 1
   persistAcrossStateSwap: 0
   oneShot: 1
   scaleMultiplier: 2

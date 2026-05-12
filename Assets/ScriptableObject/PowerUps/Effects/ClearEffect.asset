@@ -9,13 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4992aab6f8f1af84c81ca22237a3e46c, type: 3}
-  m_Name: SlowMovement3X
-  m_EditorClassIdentifier: Assembly-CSharp::SlowMovementEffect
+  m_Script: {fileID: 11500000, guid: 0681b5964b13fee4e93b77fd00993fea, type: 3}
+  m_Name: ClearEffect
+  m_EditorClassIdentifier: Assembly-CSharp::ClearPowerupEffect
   sprite: {fileID: 0}
-  spriteAnimation: {fileID: 0}
-  animationSpeed: 1
   persistAcrossStateSwap: 0
   oneShot: 0
-  speedMultiplier: 0.5
-  duration: 100

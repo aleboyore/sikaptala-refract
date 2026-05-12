@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6944869455067623663}
   - component: {fileID: 4338178054109536321}
   - component: {fileID: 9177220581158899629}
+  - component: {fileID: 8418099032051202890}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -58,3 +59,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   _player: {fileID: 0}
+--- !u!114 &8418099032051202890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6144927943012500934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78b475b995d57d841b3cbb007672a07c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CheckpointManager

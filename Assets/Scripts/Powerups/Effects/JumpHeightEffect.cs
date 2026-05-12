@@ -26,6 +26,11 @@ public class JumpHeightEffect : PowerupEffect
         ctrl?.SetJumpHeightMultiplier(1f);
     }
 
+    public override string GetDisplayName()
+    {
+        return $"Jump Height {jumpHeightMultiplier:0.##}x";
+    }
+
     private IEnumerator ExpireRoutine(GameObject player)
     {
         yield return new WaitForSeconds(duration);

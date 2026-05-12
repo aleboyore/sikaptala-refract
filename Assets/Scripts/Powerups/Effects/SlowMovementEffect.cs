@@ -25,6 +25,11 @@ public class SlowMovementEffect : PowerupEffect
         player.GetComponent<PlayerController>()?.SetSpeedMultiplier(1f);
     }
 
+    public override string GetDisplayName()
+    {
+        return $"Slow Movement {speedMultiplier:0.##}x";
+    }
+
     private IEnumerator SlowMovementRoutine(GameObject player)
     {
         yield return new WaitForSeconds(duration);

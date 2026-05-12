@@ -12,4 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76c2f0bf252bfae40a9bcc3d66f09ba0, type: 3}
   m_Name: Dash
   m_EditorClassIdentifier: Assembly-CSharp::DashEffect
+  sprite: {fileID: 0}
+  spriteAnimation: {fileID: 0}
+  animationSpeed: 1
+  persistAcrossStateSwap: 0
+  oneShot: 0
   dashSpeed: 20
+  dashCount: 1

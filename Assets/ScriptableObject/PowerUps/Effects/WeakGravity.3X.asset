@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: WeakGravity.3X
   m_EditorClassIdentifier: Assembly-CSharp::WeakGravityEffect
   sprite: {fileID: 0}
+  spriteAnimation: {fileID: 0}
+  animationSpeed: 1
   persistAcrossStateSwap: 0
   oneShot: 1
   gravityMultiplier: 0.3

@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: DoubleJump2X
   m_EditorClassIdentifier: Assembly-CSharp::DoubleJumpEffect
   sprite: {fileID: 0}
+  spriteAnimation: {fileID: 0}
+  animationSpeed: 1
   persistAcrossStateSwap: 0
   oneShot: 0
   jumpCount: 2

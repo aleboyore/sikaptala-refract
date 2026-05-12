@@ -8,6 +8,8 @@ public class PlayerController : MonoBehaviour
         // Protected state for gameplay logic
         protected Rigidbody2D _rb;
         protected CapsuleCollider2D _col;
+        protected Vector2 _baseColliderSize;
+        protected Vector2 _baseColliderOffset;
         protected FrameInput _frameInput;
         protected Vector2 _frameVelocity;
         protected bool _grounded;
@@ -27,6 +29,7 @@ public class PlayerController : MonoBehaviour
         protected float _dashSpeed = 20f;
         protected float _jumpHeightMultiplier = 1f;
         protected float _speedMultiplier = 1f;
+        protected float _fallMultiplier = 1f;
         protected bool _hasShield = false;
         protected bool _isInvulnerable = false;
         protected bool _gravityFlipped = false;
@@ -60,6 +63,8 @@ public class PlayerController : MonoBehaviour
         {
             _rb = GetComponent<Rigidbody2D>();
             _col = GetComponent<CapsuleCollider2D>();
+            _baseColliderSize = _col.size;
+            _baseColliderOffset = _col.offset;
             _characterState = GetComponent<CharacterState>();
             if (_rb) _rb.gravityScale = 0;
             _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
@@ -101,9 +106,16 @@ public class PlayerController : MonoBehaviour
 
             bool supportedByBox = _groundSupport != null;
 
+            // Scale the cast size and offset to match the root transform scale
+            float   scale      = Mathf.Abs(transform.localScale.y); // use Y; X may be negative (facing)
+            Vector2 scaledSize = _baseColliderSize   * scale;
+            Vector2 scaledOffset = _baseColliderOffset * scale;
+            Vector2 castCenter = (Vector2)transform.position + scaledOffset;
+
             bool groundHit = Physics2D.CapsuleCast(
-                _col.bounds.center, _col.size, _col.direction, 0,
-                _gravityFlipped ? Vector2.up : Vector2.down, _stats.GrounderDistance, _stats.GroundLayer);
+                castCenter, scaledSize, _col.direction, 0,
+                _gravityFlipped ? Vector2.up : Vector2.down,
+                _stats.GrounderDistance, _stats.GroundLayer);
 
             groundHit |= supportedByBox;
 
@@ -200,7 +212,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                var inAirGravity = _stats.FallAcceleration;
+                var inAirGravity = _stats.FallAcceleration * _fallMultiplier;
                 if (_endedJumpEarly && _frameVelocity.y > 0)
                     inAirGravity *= _stats.JumpEndEarlyGravityModifier;
 
@@ -276,6 +288,11 @@ public class PlayerController : MonoBehaviour
         public bool HasBufferedJump => _bufferedJumpUsable && (_time - _timeJumpWasPressed) <= _stats.JumpBuffer;
         public bool IsGrounded => _grounded;
 
+        public void SetFallMultiplier(float multiplier)
+        {
+            _fallMultiplier = Mathf.Max(0.01f, multiplier);
+        }
+
         public void EnterFrozenState(float duration)
         {
             if (State == PlayerState.LockedIn) return;
@@ -312,6 +329,8 @@ public class PlayerController : MonoBehaviour
             if (_rb) _rb.constraints = RigidbodyConstraints2D.FreezeRotation;
             if (_rb) _rb.linearVelocity = Vector2.zero;
             _frameVelocity = Vector2.zero;
+
+            _fallMultiplier = 1f;
             transform.position = position;
             _airJumpsRemaining = _airJumpsAllowed;
             _jumpHeightMultiplier = 1f;
@@ -331,6 +350,11 @@ public class PlayerController : MonoBehaviour
             return _airJumpsAllowed;
         }
 
+        public int GetAirJumpsRemaining()
+        {
+            return _airJumpsRemaining;
+        }
+
         public void SetDashCount(int count, float speed)
         {
             _dashesAllowed = Mathf.Max(0, count);
@@ -341,6 +365,33 @@ public class PlayerController : MonoBehaviour
         public int GetDashesAllowed()
         {
             return _dashesAllowed;
+        }
+
+        public int GetDashesRemaining()
+        {
+            return _dashesRemaining;
+        }
+
+        public void ResetPowerupState()
+        {
+            _airJumpsAllowed = 0;
+            _airJumpsRemaining = 0;
+            _dashesAllowed = 0;
+            _dashesRemaining = 0;
+            _dashSpeed = 20f;
+            _jumpHeightMultiplier = 1f;
+            _speedMultiplier = 1f;
+            _hasShield = false;
+            _isInvulnerable = false;
+            _groundSupport = null;
+            _grounded = false;
+            _coyoteUsable = false;
+            _bufferedJumpUsable = false;
+            _endedJumpEarly = false;
+            _frameVelocity = Vector2.zero;
+
+            if (_gravityFlipped)
+                FlipGravity();
         }
 
         public bool ConsumeDash(out float dashSpeed)

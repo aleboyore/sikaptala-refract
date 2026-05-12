@@ -12,6 +12,9 @@ public class EffectTracker : MonoBehaviour
     // Pairs of (effect definition, coroutine host) for each active timed effect
     private readonly List<(PowerupEffect effect, PowerupEffectRunner runner)> _activeEffects = new();
 
+    // UI-visible effects, including one-shot effects without runners.
+    private readonly List<(PowerupEffect effect, PowerupEffectRunner runner)> _displayEffects = new();
+
     // Permanent record of one-shot effects that have been applied this session
     private readonly HashSet<PowerupEffect> _appliedOneShots = new();
 
@@ -57,15 +60,22 @@ public class EffectTracker : MonoBehaviour
             _appliedOneShots.Add(effect);
 
         if (runner != null)
+        {
             _activeEffects.Add((effect, runner));
+            _displayEffects.Add((effect, runner));
+        }
+        else
+        {
+            _displayEffects.Add((effect, null));
+        }
     }
 
     /// <summary>
-    /// Returns a snapshot list of active effects and their runners for UI.
+    /// Returns a snapshot list of UI-visible effects and their runners.
     /// </summary>
-    public List<(PowerupEffect effect, PowerupEffectRunner runner)> GetActiveEffects()
+    public List<(PowerupEffect effect, PowerupEffectRunner runner)> GetDisplayedEffects()
     {
-        return new List<(PowerupEffect, PowerupEffectRunner)>(_activeEffects);
+        return new List<(PowerupEffect, PowerupEffectRunner)>(_displayEffects);
     }
 
     private void OnStateChanged(PlayerSkinState _)
@@ -85,6 +95,7 @@ public class EffectTracker : MonoBehaviour
                 Destroy(runner);
 
             _activeEffects.RemoveAt(i);
+            _displayEffects.RemoveAll(e => e.runner == runner || e.effect == effect);
         }
     }
 
@@ -95,5 +106,27 @@ public class EffectTracker : MonoBehaviour
     public void UnregisterRunner(PowerupEffectRunner runner)
     {
         _activeEffects.RemoveAll(e => e.runner == runner);
+        _displayEffects.RemoveAll(e => e.runner == runner);
+    }
+
+    /// <summary>
+    /// Clears all tracked effects and UI-visible effect state.
+    /// </summary>
+    public void ClearAllEffects(GameObject player)
+    {
+        for (int i = _activeEffects.Count - 1; i >= 0; i--)
+        {
+            var (effect, runner) = _activeEffects[i];
+            effect?.Remove(gameObject);
+            if (runner != null)
+                Destroy(runner);
+        }
+
+        _activeEffects.Clear();
+        _displayEffects.Clear();
+        _appliedOneShots.Clear();
+
+        if (player != null)
+            ScaleCharacterEffect.ResetVisualScale(player);
     }
 }

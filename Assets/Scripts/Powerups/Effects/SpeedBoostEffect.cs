@@ -26,6 +26,11 @@ public class SpeedBoostEffect : PowerupEffect
         ctrl?.SetSpeedMultiplier(1f);
     }
 
+    public override string GetDisplayName()
+    {
+        return $"Speed {multiplier:0.##}x";
+    }
+
     private IEnumerator ExpireRoutine(GameObject player)
     {
         yield return new WaitForSeconds(duration);

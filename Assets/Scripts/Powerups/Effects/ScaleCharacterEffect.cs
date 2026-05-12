@@ -15,17 +15,59 @@ public class ScaleCharacterEffect : PowerupEffect
         EffectTracker tracker = player.GetComponent<EffectTracker>();
         if (tracker != null && tracker.IsOneShotApplied(this)) return;
 
-        // Apply scale — preserve facing direction (sign of x)
-        Vector3 s       = player.transform.localScale;
-        float baseScale = Mathf.Max(Mathf.Abs(s.x), Mathf.Abs(s.y));
-        float facing    = Mathf.Sign(s.x == 0f ? 1f : s.x);
-        player.transform.localScale = new Vector3(
-            baseScale * scaleMultiplier * facing,
-            baseScale * scaleMultiplier,
-            s.z);
+        ApplyVisualScale(player, scaleMultiplier);
 
         // Register as one-shot so the tracker records it even without a runner
         tracker?.RegisterEffect(this, null);
+    }
+
+    public override string GetDisplayName()
+    {
+        return $"Scale {scaleMultiplier:0.##}x";
+    }
+
+    public static void ApplyVisualScale(GameObject player, float multiplier)
+    {
+        if (player == null) return;
+
+        Vector3 current = player.transform.localScale;
+        // Preserve facing direction (sign of X from HandleSpriteDirection)
+        float facing = Mathf.Sign(current.x == 0f ? 1f : current.x);
+        player.transform.localScale = new Vector3(
+            multiplier * facing,
+            multiplier,
+            current.z);
+    }
+
+    public static void ResetVisualScale(GameObject player)
+    {
+        if (player == null) return;
+
+        Vector3 current = player.transform.localScale;
+        float facing = Mathf.Sign(current.x == 0f ? 1f : current.x);
+        player.transform.localScale = new Vector3(facing, 1f, current.z);
+    }
+
+    private static Transform FindVisualTransform(Transform root)
+    {
+        if (root == null) return null;
+
+        if (root.name == "Visual")
+            return root;
+
+        Transform direct = root.Find("Visual");
+        if (direct != null)
+            return direct;
+
+        for (int i = 0; i < root.childCount; i++)
+        {
+            Transform child = root.GetChild(i);
+            Transform found = FindVisualTransform(child);
+            if (found != null)
+                return found;
+        }
+
+        return null;
     }
 
     // No Remove override — scale is intentionally permanent.

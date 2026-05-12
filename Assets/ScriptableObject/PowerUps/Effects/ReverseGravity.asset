@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: ReverseGravity
   m_EditorClassIdentifier: Assembly-CSharp::ReverseGravityEffect
   sprite: {fileID: 0}
+  spriteAnimation: {fileID: 0}
+  animationSpeed: 1
   persistAcrossStateSwap: 0
   oneShot: 1

@@ -11,19 +11,26 @@ public class WeakGravityEffect : PowerupEffect
 
     public override void Apply(GameObject player)
     {
+        PlayerController ctrl = player.GetComponent<PlayerController>();
+        if (ctrl == null) return;
+
+        ctrl.SetFallMultiplier(gravityMultiplier);
         PowerupEffectRunner.Run(player, this, WeakGravityRoutine(player), 5f);
+    }
+
+    public override void Remove(GameObject player)
+    {
+        player.GetComponent<PlayerController>()?.SetFallMultiplier(1f);
+    }
+
+    public override string GetDisplayName()
+    {
+        return $"Weak Gravity {gravityMultiplier:0.##}x";
     }
 
     private IEnumerator WeakGravityRoutine(GameObject player)
     {
-        Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
-        if (rb == null) yield break;
-
-        float originalGravityScale = rb.gravityScale;
-        rb.gravityScale = originalGravityScale * gravityMultiplier;
-
         yield return new WaitForSeconds(5f);
-
-        rb.gravityScale = originalGravityScale;
+        Remove(player);
     }
 }
