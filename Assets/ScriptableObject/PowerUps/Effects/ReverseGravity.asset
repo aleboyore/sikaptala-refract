@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3dbe983ec5e98714e80e453d5bae25da, type: 3}
   m_Name: ReverseGravity
   m_EditorClassIdentifier: Assembly-CSharp::ReverseGravityEffect
-  duration: 5
+  sprite: {fileID: 0}
+  persistAcrossStateSwap: 0
+  oneShot: 1

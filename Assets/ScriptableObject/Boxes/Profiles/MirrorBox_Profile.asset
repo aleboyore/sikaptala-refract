@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc8dafa8a0b8a084dac273c2215d7249, type: 3}
   m_Name: MirrorBox_Profile
   m_EditorClassIdentifier: Assembly-CSharp::BoxBehaviorProfile
-  gravityScale: 0
+  gravityScale: 2
   linearDamping: 8
   pushResistance: 2
   returnToRestSpeed: 0
+  allowVerticalMovement: 1
   shardCanStandOn: 1
   veilCanStandOn: 1
   shardCanPush: 1
@@ -30,6 +31,6 @@ MonoBehaviour:
   killsOnTouch: 0
   respawnDelay: 0
   moveOnlyWhenGrounded: 0
-  shardContactEffect: {fileID: 11400000, guid: 53589315987c194419696d768d053ba5, type: 2}
-  veilContactEffect: {fileID: 11400000, guid: 70497976cde606d44a2aa6289e77978c, type: 2}
-  contactEffectRepeats: 0
+  shardContactEffect: {fileID: 11400000, guid: 1af9b3bc8b2328c498f2309dc508814c, type: 2}
+  veilContactEffect: {fileID: 11400000, guid: e0b99826ce1447543b57ad0e0996f121, type: 2}
+  contactEffectRepeats: 1

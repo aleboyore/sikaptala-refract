@@ -12,5 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4992aab6f8f1af84c81ca22237a3e46c, type: 3}
   m_Name: SlowMovement3X
   m_EditorClassIdentifier: Assembly-CSharp::SlowMovementEffect
-  scaleMultiplier: 3
+  sprite: {fileID: 0}
+  persistAcrossStateSwap: 0
+  oneShot: 0
+  speedMultiplier: 0.5
   duration: 100

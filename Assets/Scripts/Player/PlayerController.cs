@@ -29,6 +29,8 @@ public class PlayerController : MonoBehaviour
         protected float _speedMultiplier = 1f;
         protected bool _hasShield = false;
         protected bool _isInvulnerable = false;
+        protected bool _gravityFlipped = false;
+        protected Transform _groundSupport;
 
         [SerializeField] protected ScriptableStats _stats;
         CharacterState _characterState;
@@ -97,9 +99,13 @@ public class PlayerController : MonoBehaviour
         {
             Physics2D.queriesStartInColliders = false;
 
+            bool supportedByBox = _groundSupport != null;
+
             bool groundHit = Physics2D.CapsuleCast(
                 _col.bounds.center, _col.size, _col.direction, 0,
-                Vector2.down, _stats.GrounderDistance, _stats.GroundLayer);
+                _gravityFlipped ? Vector2.up : Vector2.down, _stats.GrounderDistance, _stats.GroundLayer);
+
+            groundHit |= supportedByBox;
 
             if (groundHit)
             {
@@ -170,6 +176,8 @@ public class PlayerController : MonoBehaviour
             // ensure we are considered airborne immediately so gravity logic doesn't cancel the jump
             _grounded = false;
             _frameVelocity.y = _stats.JumpPower * _jumpHeightMultiplier; // P1 jumps positive Y (up)
+            if (_gravityFlipped)
+                _frameVelocity.y *= -1f;
             _characterState?.SetAnimBool("isJump", true);
             _characterState?.SetAnimBool("isFalling", false);
             RaiseJumped();
@@ -180,14 +188,15 @@ public class PlayerController : MonoBehaviour
             if (_airJumpsRemaining <= 0) return false;
 
             _airJumpsRemaining--;
+            _airJumpsAllowed--;   // consumable: spent charges do not replenish on landing
             return true;
         }
 
         protected virtual void HandleGravity()
         {
-            if (_grounded && _frameVelocity.y <= 0f)
+            if (_grounded)
             {
-                _frameVelocity.y = _stats.GroundingForce;
+                _frameVelocity.y = _gravityFlipped ? -_stats.GroundingForce : _stats.GroundingForce;
             }
             else
             {
@@ -195,8 +204,9 @@ public class PlayerController : MonoBehaviour
                 if (_endedJumpEarly && _frameVelocity.y > 0)
                     inAirGravity *= _stats.JumpEndEarlyGravityModifier;
 
+                float targetFallSpeed = _gravityFlipped ? _stats.MaxFallSpeed : -_stats.MaxFallSpeed;
                 _frameVelocity.y = Mathf.MoveTowards(
-                    _frameVelocity.y, -_stats.MaxFallSpeed, inAirGravity * Time.fixedDeltaTime);
+                    _frameVelocity.y, targetFallSpeed, inAirGravity * Time.fixedDeltaTime);
             }
             _characterState?.SetAnimBool("isFalling", !_grounded && _frameVelocity.y < 0f);
         }
@@ -234,18 +244,21 @@ public class PlayerController : MonoBehaviour
 
         protected virtual void HandleSpriteDirection()
         {
+            Vector3 scale = transform.localScale;
+            float uniformScale = Mathf.Max(Mathf.Abs(scale.x), Mathf.Abs(scale.y));
+
             if (_frameInput.Move.x > 0.01f)
             {
                 // Moving right - no flip
-                var scale = transform.localScale;
-                scale.x = 1f;
+                scale.x = uniformScale;
+                scale.y = uniformScale;
                 transform.localScale = scale;
             }
             else if (_frameInput.Move.x < -0.01f)
             {
                 // Moving left - flip
-                var scale = transform.localScale;
-                scale.x = -1f;
+                scale.x = -uniformScale;
+                scale.y = uniformScale;
                 transform.localScale = scale;
             }
         }
@@ -313,11 +326,21 @@ public class PlayerController : MonoBehaviour
             _airJumpsRemaining = _airJumpsAllowed;
         }
 
+        public int GetAirJumpsAllowed()
+        {
+            return _airJumpsAllowed;
+        }
+
         public void SetDashCount(int count, float speed)
         {
             _dashesAllowed = Mathf.Max(0, count);
             _dashesRemaining = _dashesAllowed;
             _dashSpeed = speed;
+        }
+
+        public int GetDashesAllowed()
+        {
+            return _dashesAllowed;
         }
 
         public bool ConsumeDash(out float dashSpeed)
@@ -339,6 +362,34 @@ public class PlayerController : MonoBehaviour
             _speedMultiplier = Mathf.Max(0.1f, multiplier);
         }
 
+        public void ForceGrounded()
+        {
+            if (_grounded) return;
+
+            _grounded = true;
+            _frameLeftGrounded = _time;
+            _coyoteUsable = true;
+            _bufferedJumpUsable = true;
+            _endedJumpEarly = false;
+            _frameVelocity.y = 0f;
+
+            _characterState?.SetAnimBool("isJump", false);
+            _characterState?.SetAnimBool("isFalling", false);
+            RaiseGroundedChanged(true, 0f);
+        }
+
+        public void SetGroundSupport(Transform support)
+        {
+            _groundSupport = support;
+            ForceGrounded();
+        }
+
+        public void ClearGroundSupport(Transform support)
+        {
+            if (_groundSupport == support)
+                _groundSupport = null;
+        }
+
         public void GrantShield()
         {
             _hasShield = true;
@@ -347,7 +398,7 @@ public class PlayerController : MonoBehaviour
         public void GrantInvulnerability(float duration)
         {
             _isInvulnerable = true;
-            PowerupEffectRunner.Run(gameObject, InvulnerabilityRoutine(duration));
+            PowerupEffectRunner.Run(gameObject, null, InvulnerabilityRoutine(duration), duration);
         }
 
         private System.Collections.IEnumerator InvulnerabilityRoutine(float duration)
@@ -369,6 +420,20 @@ public class PlayerController : MonoBehaviour
             }
 
             return true;
+        }
+
+        public void FlipGravity()
+        {
+            _gravityFlipped = !_gravityFlipped;
+            _grounded = false;
+            _coyoteUsable = false;
+            _bufferedJumpUsable = false;
+            _endedJumpEarly = false;
+
+            if (_rb != null)
+                _rb.linearVelocity = new Vector2(_rb.linearVelocity.x, 0f);
+
+            _frameVelocity.y = 0f;
         }
 
         public void SnapToX(float worldX)

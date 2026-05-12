@@ -12,3 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5a2fa48643b84a4ca371c8911e11c74, type: 3}
   m_Name: Shield
   m_EditorClassIdentifier: Assembly-CSharp::ShieldEffect
+  sprite: {fileID: 0}
+  persistAcrossStateSwap: 0
+  oneShot: 0

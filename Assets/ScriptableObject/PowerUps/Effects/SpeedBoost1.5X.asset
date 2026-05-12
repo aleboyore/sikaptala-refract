@@ -12,5 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66aadd0ef8e9d304c969f7f7828bfaf1, type: 3}
   m_Name: SpeedBoost1.5X
   m_EditorClassIdentifier: Assembly-CSharp::SpeedBoostEffect
+  sprite: {fileID: 0}
+  persistAcrossStateSwap: 0
+  oneShot: 0
   multiplier: 1.5
-  duration: 3
+  duration: 5

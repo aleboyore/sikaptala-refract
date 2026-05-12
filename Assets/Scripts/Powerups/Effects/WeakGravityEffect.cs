@@ -11,7 +11,7 @@ public class WeakGravityEffect : PowerupEffect
 
     public override void Apply(GameObject player)
     {
-        PowerupEffectRunner.Run(player, WeakGravityRoutine(player));
+        PowerupEffectRunner.Run(player, this, WeakGravityRoutine(player), 5f);
     }
 
     private IEnumerator WeakGravityRoutine(GameObject player)

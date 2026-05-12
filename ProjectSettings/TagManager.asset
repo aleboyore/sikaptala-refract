@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Shard
   - Veil
+  - Door
   layers:
   - Default
   - TransparentFX

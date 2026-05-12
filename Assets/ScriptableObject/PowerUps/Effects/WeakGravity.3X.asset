@@ -12,5 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f53152e4045d35c4b8f169898c683eb7, type: 3}
   m_Name: WeakGravity.3X
   m_EditorClassIdentifier: Assembly-CSharp::WeakGravityEffect
+  sprite: {fileID: 0}
+  persistAcrossStateSwap: 0
+  oneShot: 1
   gravityMultiplier: 0.3
-  duration: 5

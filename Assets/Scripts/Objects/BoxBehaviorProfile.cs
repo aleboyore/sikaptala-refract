@@ -4,10 +4,11 @@ using UnityEngine;
 public class BoxBehaviorProfile : ScriptableObject
 {
     [Header("Physics")]
-    public float gravityScale = 0f;
+    public float gravityScale = 1f;  // default: affected by gravity. Set 0 for floating boxes.
     public float linearDamping = 8f;
     public float pushResistance = 2f;
     public float returnToRestSpeed = 0f;
+    public bool allowVerticalMovement = true;
 
     [Header("Skin Access")]
     public bool shardCanStandOn = true;
@@ -24,6 +25,10 @@ public class BoxBehaviorProfile : ScriptableObject
     [Header("Pass Through")]
     public bool shardCanPassThrough = false;
     public bool veilCanPassThrough = false;
+
+    [Header("Fall Through")]
+    public bool shardCanFallThrough = false;
+    public bool veilCanFallThrough = false;
 
     [Header("One-Way Push")]
     public bool oneWayEnabled = false;

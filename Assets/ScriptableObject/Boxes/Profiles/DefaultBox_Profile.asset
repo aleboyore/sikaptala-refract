@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc8dafa8a0b8a084dac273c2215d7249, type: 3}
   m_Name: DefaultBox_Profile
   m_EditorClassIdentifier: Assembly-CSharp::BoxBehaviorProfile
-  gravityScale: 0
+  gravityScale: 2
   linearDamping: 8
   pushResistance: 2
   returnToRestSpeed: 0
+  allowVerticalMovement: 1
   shardCanStandOn: 1
   veilCanStandOn: 1
   shardCanPush: 1

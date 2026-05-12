@@ -5,13 +5,14 @@ public class PowerupBehavior : MonoBehaviour
     [SerializeField] private PowerupDefinition definition;
     private SpriteRenderer _spriteRenderer;
     private CharacterState _charState;
+    private bool _consumed;
 
     void Awake()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
         
         // Find the player's CharacterState in the scene
-        _charState = FindFirstObjectByType<CharacterState>();
+        _charState = FindAnyObjectByType<CharacterState>();
         if (_charState != null)
         {
             _charState.onStateChanged.AddListener(OnPlayerStateChanged);
@@ -44,6 +45,8 @@ public class PowerupBehavior : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        if (_consumed) return;
+
         CharacterState state = other.GetComponent<CharacterState>();
         if (state == null || definition == null) return;
 
@@ -57,7 +60,13 @@ public class PowerupBehavior : MonoBehaviour
         if (effect == null && !definition.consumeWhenEffectMissing)
             return;
 
-        effect?.Apply(other.gameObject);
+        _consumed = true;
+        if (effect != null)
+        {
+            EffectTracker tracker = other.GetComponent<EffectTracker>();
+            if (tracker == null || !tracker.IsOneShotApplied(effect))
+                effect.Apply(other.gameObject);
+        }
 
         // Consumed after a valid pickup path.
         Destroy(gameObject);

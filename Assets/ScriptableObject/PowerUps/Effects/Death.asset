@@ -12,3 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5626d2207c2cd6b4d9b0f09ec166f745, type: 3}
   m_Name: Death
   m_EditorClassIdentifier: Assembly-CSharp::DeathEffect
+  sprite: {fileID: 0}
+  persistAcrossStateSwap: 0
+  oneShot: 1

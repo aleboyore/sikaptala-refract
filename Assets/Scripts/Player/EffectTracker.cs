@@ -2,12 +2,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Tracks active effects on the player and clears them on state swap.
+/// Tracks active power-up effects on the player.
+/// On skin swap, reverts and cancels all non-persistent effects.
 /// </summary>
 public class EffectTracker : MonoBehaviour
 {
     private CharacterState _characterState;
-    private readonly List<PowerupEffectRunner> _activeRunners = new();
+
+    // Pairs of (effect definition, coroutine host) for each active timed effect
+    private readonly List<(PowerupEffect effect, PowerupEffectRunner runner)> _activeEffects = new();
+
+    // Permanent record of one-shot effects that have been applied this session
+    private readonly HashSet<PowerupEffect> _appliedOneShots = new();
 
     private void Awake()
     {
@@ -22,20 +28,72 @@ public class EffectTracker : MonoBehaviour
             _characterState.onStateChanged.RemoveListener(OnStateChanged);
     }
 
-    public void RegisterRunner(PowerupEffectRunner runner)
+    /// <summary>
+    /// Returns true if a one-shot effect has already been applied to this player.
+    /// Call this before Apply() for effects with oneShot = true.
+    /// </summary>
+    public bool IsOneShotApplied(PowerupEffect effect)
+        => effect != null && effect.oneShot && _appliedOneShots.Contains(effect);
+
+    /// <summary>
+    /// Clears the one-shot applied flag for an effect, allowing it to be applied again.
+    /// Called when player exits a box to allow reapplication on re-entry.
+    /// </summary>
+    public void ClearOneShotFlag(PowerupEffect effect)
     {
-        if (runner != null && !_activeRunners.Contains(runner))
-            _activeRunners.Add(runner);
+        if (effect != null)
+            _appliedOneShots.Remove(effect);
     }
 
-    private void OnStateChanged(PlayerSkinState newState)
+    /// <summary>
+    /// Register a newly started effect. Called by PowerupEffectRunner.Run.
+    /// </summary>
+    public void RegisterEffect(PowerupEffect effect, PowerupEffectRunner runner)
     {
-        // Clear all active effect runners on state swap
-        foreach (var runner in _activeRunners)
+        if (effect == null) return;
+
+        // Record one-shot effects permanently (survive state swaps)
+        if (effect.oneShot)
+            _appliedOneShots.Add(effect);
+
+        if (runner != null)
+            _activeEffects.Add((effect, runner));
+    }
+
+    /// <summary>
+    /// Returns a snapshot list of active effects and their runners for UI.
+    /// </summary>
+    public List<(PowerupEffect effect, PowerupEffectRunner runner)> GetActiveEffects()
+    {
+        return new List<(PowerupEffect, PowerupEffectRunner)>(_activeEffects);
+    }
+
+    private void OnStateChanged(PlayerSkinState _)
+    {
+        // Iterate in reverse so we can safely remove while iterating
+        for (int i = _activeEffects.Count - 1; i >= 0; i--)
         {
+            var (effect, runner) = _activeEffects[i];
+
+            if (effect.persistAcrossStateSwap)
+                continue; // leave this effect running
+
+            // Revert the effect's changes before killing the coroutine
+            effect.Remove(gameObject);
+
             if (runner != null)
                 Destroy(runner);
+
+            _activeEffects.RemoveAt(i);
         }
-        _activeRunners.Clear();
+    }
+
+    /// <summary>
+    /// Called by PowerupEffectRunner when its coroutine finishes naturally.
+    /// Removes the completed entry so the list does not grow unbounded.
+    /// </summary>
+    public void UnregisterRunner(PowerupEffectRunner runner)
+    {
+        _activeEffects.RemoveAll(e => e.runner == runner);
     }
 }
