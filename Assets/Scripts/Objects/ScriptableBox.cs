@@ -408,9 +408,19 @@ public class ScriptableBox : MonoBehaviour, ICheckpointRestorer
         // The checkpoint restore loop already restored the active state, transform,
         // and serialized component state. Do not overwrite those values here.
         // Only clear runtime motion and contact bookkeeping.
-        rb.linearVelocity = Vector2.zero;
+        // Ensure Rigidbody position matches the restored transform so rest/spawn
+        // positions are consistent. Transform was restored earlier by CheckpointManager.
+        rb.position = transform.position;
+        rb.rotation = transform.rotation.eulerAngles.z;
+        // Ensure physics body matches transform immediately and clear motion.
+        rb.MovePosition(transform.position);
+        rb.velocity = Vector2.zero;
         rb.angularVelocity = 0f;
+        rb.WakeUp();
+
+        // Align saved positions used for respawn/rest behavior with current transform.
         restPosition = rb.position;
+        spawnPosition = transform.position;
 
         // Clear all contact and lock state so the box can behave normally after respawn.
         contactSet.Clear();
