@@ -53,4 +53,7 @@ public class BoxBehaviorProfile : ScriptableObject
 
     [Tooltip("Play once per contact, or every frame while touching.")]
     public bool contactEffectRepeats = false;
+
+    [Tooltip("If true, the contact effect is locked to a single application per touch until the player exits the box.")]
+    public bool lockContactEffect = false;
 }

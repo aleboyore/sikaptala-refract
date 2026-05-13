@@ -60,7 +60,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   _player: {fileID: 0}
   _playerPrefab: {fileID: 0}
-  _respawnDelaySeconds: 0.75
+  _respawnDelaySeconds: 0
   _autoRespawnIfPlayerMissing: 1
   _levelNames:
   - Level 1

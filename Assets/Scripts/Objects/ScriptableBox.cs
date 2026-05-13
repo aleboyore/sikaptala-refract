@@ -14,6 +14,7 @@ public class ScriptableBox : MonoBehaviour, ICheckpointRestorer
     Vector3 spawnPosition;
     readonly HashSet<GameObject> contactSet = new();
     readonly HashSet<GameObject> effectAppliedSet = new();
+    readonly HashSet<GameObject> effectLockedPlayers = new();
     readonly HashSet<GameObject> _lockingPlayers = new();
     
     private RigidbodyConstraints2D _prevConstraints;
@@ -135,6 +136,7 @@ public class ScriptableBox : MonoBehaviour, ICheckpointRestorer
         restPosition = rb.position;
         contactSet.Clear();
         effectAppliedSet.Clear();
+        effectLockedPlayers.Clear();
     }
 
     /// <summary>
@@ -205,11 +207,22 @@ public class ScriptableBox : MonoBehaviour, ICheckpointRestorer
         PowerupEffect fx = GetContactEffect(playerState);
         if (fx != null)
         {
-            if (profile.contactEffectRepeats)
+            bool effectLocked = profile.lockContactEffect;
+
+            bool canApplyEffect = true;
+            if (effectLocked)
+            {
+                if (effectLockedPlayers.Contains(player))
+                    canApplyEffect = false;
+                else
+                    effectLockedPlayers.Add(player);
+            }
+
+            if (canApplyEffect && profile.contactEffectRepeats && !effectLocked)
             {
                 fx.Apply(player);
             }
-            else if (effectAppliedSet.Add(player))
+            else if (canApplyEffect && effectAppliedSet.Add(player))
             {
                 // For one-shot effects, also check the player-side tracker
                 // so multiple boxes of the same type don't stack the effect.
@@ -235,6 +248,7 @@ public class ScriptableBox : MonoBehaviour, ICheckpointRestorer
     {
         contactSet.Remove(player);
         effectAppliedSet.Remove(player);
+        effectLockedPlayers.Remove(player);
         ReleaseLockForPlayer(player);
 
         if (player.transform.parent == transform)
@@ -371,6 +385,7 @@ public class ScriptableBox : MonoBehaviour, ICheckpointRestorer
         // Clear all contact state
         contactSet.Clear();
         effectAppliedSet.Clear();
+        effectLockedPlayers.Clear();
         
         Debug.Log($"[Checkpoint] Box {gameObject.name} restored to spawn state");
     }

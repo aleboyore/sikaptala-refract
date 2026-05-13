@@ -37,6 +37,11 @@ public class InputHandler : MonoBehaviour
         bool jumpDown = Actions.Gameplay.Jump.WasPressedThisFrame();
         bool jumpHeld = Actions.Gameplay.Jump.IsPressed();
 
+		if (Actions.Gameplay.Restart.WasPressedThisFrame())
+		{
+			GameManager.Instance?.TriggerDeath();
+		}
+
         P1Input = new FrameInput
         {
             Move = raw,
