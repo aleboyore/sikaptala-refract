@@ -107,12 +107,13 @@ public class CheckpointManager : MonoBehaviour
 			{
 				compState = new SerializedComponentState(go);
 			}
+			bool isPowerup = go.GetComponent<PowerupBehavior>() != null;
 			
 			var entry = new CheckpointEntry
 			{
 				id = id.Id,
 				prefabName = id.PrefabName,
-				active = go.activeInHierarchy,
+				active = isPowerup ? true : go.activeInHierarchy,
 				position = go.transform.position,
 				rotation = go.transform.rotation.eulerAngles,
 				scale = go.transform.localScale,
@@ -194,7 +195,8 @@ public class CheckpointManager : MonoBehaviour
 			if (lookup.TryGetValue(id.Id, out var entry))
 			{
 				// Object existed at checkpoint: restore transform and active state
-				go.SetActive(entry.active);
+				bool isPowerup = go.GetComponent<PowerupBehavior>() != null;
+				go.SetActive(isPowerup ? true : entry.active);
 				go.transform.position = entry.position;
 				go.transform.rotation = Quaternion.Euler(entry.rotation);
 				go.transform.localScale = entry.scale;
@@ -280,12 +282,13 @@ public class CheckpointManager : MonoBehaviour
 			{
 				compState = new SerializedComponentState(go);
 			}
+			bool isPowerup = go.GetComponent<PowerupBehavior>() != null;
 			
 			snapshot.entries.Add(new CheckpointEntry
 			{
 				id = id.Id,
 				prefabName = id.PrefabName,
-				active = go.activeInHierarchy,
+				active = isPowerup ? true : go.activeInHierarchy,
 				position = go.transform.position,
 				rotation = go.transform.rotation.eulerAngles,
 				scale = go.transform.localScale,

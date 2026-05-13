@@ -179,6 +179,11 @@ public class EffectTracker : MonoBehaviour
 
     private void OnStateChanged(PlayerSkinState _)
     {
+        if (transform.parent != null && transform.parent.GetComponent<ScriptableBox>() != null)
+        {
+            transform.SetParent(null, true);
+        }
+
         ClearAllEffects(gameObject);
     }
 
