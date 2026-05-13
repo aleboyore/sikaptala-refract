@@ -100,18 +100,18 @@ public class CheckpointManager : MonoBehaviour
 			if (IsPlayerHierarchy(go))
 				continue;
 			
-			// Capture component state (rigidbody type, collider state, etc.) for boxes only
+			// Capture component state for boxes (rigidbody type, collider state, etc.)
 			SerializedComponentState compState = null;
 			if (go.GetComponent<ScriptableBox>() != null)
 			{
 				compState = new SerializedComponentState(go);
 			}
-			
+
 			var entry = new CheckpointEntry
 			{
 				id = id.Id,
 				prefabName = id.PrefabName,
-				active = go.activeInHierarchy,
+				active = go.activeInHierarchy, // always use the real active state
 				position = go.transform.position,
 				rotation = go.transform.rotation.eulerAngles,
 				scale = go.transform.localScale,
@@ -121,6 +121,12 @@ public class CheckpointManager : MonoBehaviour
 			_currentSnapshot.entries.Add(entry);
 
 			if (go.activeInHierarchy) _checkpointActiveObjects.Add(go);
+			
+			// Debug powerup capture
+			if (go.GetComponent<PowerupBehavior>() != null)
+			{
+				Debug.Log($"[Checkpoint] CAPTURED powerup '{go.name}' active={entry.active}");
+			}
 		}
 
 		// Capture player effect state if available
@@ -192,16 +198,17 @@ public class CheckpointManager : MonoBehaviour
 
 			if (lookup.TryGetValue(id.Id, out var entry))
 			{
-				// Object existed at checkpoint: restore transform and active state
+				// Restore transform and active state from snapshot exactly as captured.
 				go.SetActive(entry.active);
 				go.transform.position = entry.position;
 				go.transform.rotation = Quaternion.Euler(entry.rotation);
 				go.transform.localScale = entry.scale;
-				
-				// Restore all component state (rigidbody type, collider state, etc.)
+
+				// Restore component state (rigidbody type, etc.) for boxes.
 				if (entry.componentState != null)
 				{
 					entry.componentState.Apply(go);
+					Debug.Log($"[Checkpoint] Restored component state for '{go.name}'");
 				}
 
 				var restorer = go.GetComponent<ICheckpointRestorer>();
@@ -277,12 +284,12 @@ public class CheckpointManager : MonoBehaviour
 			{
 				compState = new SerializedComponentState(go);
 			}
-			
+
 			snapshot.entries.Add(new CheckpointEntry
 			{
 				id = id.Id,
 				prefabName = id.PrefabName,
-				active = go.activeInHierarchy,
+				active = go.activeInHierarchy, // always use the real active state
 				position = go.transform.position,
 				rotation = go.transform.rotation.eulerAngles,
 				scale = go.transform.localScale,
@@ -325,12 +332,12 @@ public class CheckpointManager : MonoBehaviour
 				continue;
 			if (lookup.TryGetValue(id.Id, out var entry))
 			{
-				go.SetActive(entry.active);
+				go.SetActive(entry.active); // restore exact state from snapshot
 				go.transform.position = entry.position;
 				go.transform.rotation = Quaternion.Euler(entry.rotation);
 				go.transform.localScale = entry.scale;
-				
-				// Restore all component state (rigidbody type, collider state, etc.)
+
+				// Restore component state (rigidbody type, etc.) for boxes.
 				if (entry.componentState != null)
 				{
 					entry.componentState.Apply(go);
@@ -341,6 +348,8 @@ public class CheckpointManager : MonoBehaviour
 			}
 			else
 			{
+				if (go.GetComponent<PowerupBehavior>() != null)
+					Debug.LogWarning($"[Checkpoint] RestoreSnapshot({label}): Powerup '{go.name}' NOT FOUND in snapshot entries!");
 				// For the initial-spawn snapshot, avoid deactivating anything we failed to capture.
 				// This prevents scene boxes/powerups from disappearing because the initial capture
 				// happened before their identity state was fully stable.

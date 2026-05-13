@@ -125,16 +125,15 @@ public class PowerupBehavior : MonoBehaviour, ICheckpointRestorer
     /// </summary>
     public void RestoreToCheckpoint()
     {
-        // Mark as not consumed so player can collect again
+        // CheckpointManager already called go.SetActive(entry.active) before calling this,
+        // so we only need to reset internal consumed state. Do NOT call SetActive here.
         _consumed = false;
-        
-        // If this powerup was active at checkpoint, ensure collider is enabled for collection
-        if (gameObject.activeInHierarchy)
-        {
-            Collider2D col = GetComponent<Collider2D>();
-            if (col != null && !col.enabled)
-                col.enabled = true;
-        }
+
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null)
+            col.enabled = true;
+
+        Debug.Log($"[Checkpoint] Powerup '{gameObject.name}' restored: _consumed=false, active={gameObject.activeInHierarchy}");
     }
 
     /// <summary>
