@@ -414,7 +414,7 @@ public class ScriptableBox : MonoBehaviour, ICheckpointRestorer
         rb.rotation = transform.rotation.eulerAngles.z;
         // Ensure physics body matches transform immediately and clear motion.
         rb.MovePosition(transform.position);
-        rb.velocity = Vector2.zero;
+        rb.linearVelocity = Vector2.zero;
         rb.angularVelocity = 0f;
         rb.WakeUp();
 
