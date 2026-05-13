@@ -29,12 +29,15 @@ public class MainMenu : MonoBehaviour
     }
 
     //Exit Button
-    public void QuitGame()
+    public void ExitGame()
     {
-        // Note: Application.Quit() only works in the fully built game. 
-        // We add Debug.Log so you can see it working while testing inside the Unity Editor.
-        Debug.Log("Game is Exiting...");
+        // quit app for exe file
         Application.Quit();
+
+#if UNITY_EDITOR
+        //  Exit button also work while testing in the Editor
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
     }
 
     private void OnValidate()
