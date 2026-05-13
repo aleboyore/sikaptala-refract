@@ -15,6 +15,14 @@ public class CheckpointIdentity : MonoBehaviour
 
     public string Id => id;
 
+    private void Awake()
+    {
+        // Prefab assets serialize a shared ID, so every scene instance needs its own runtime ID.
+        // This keeps checkpoint snapshots from overwriting one box/powerup with another clone of the same prefab.
+        if (gameObject.scene.IsValid())
+            id = System.Guid.NewGuid().ToString();
+    }
+
     private void Reset()
     {
         if (string.IsNullOrEmpty(id))
