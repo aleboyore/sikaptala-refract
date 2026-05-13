@@ -103,6 +103,7 @@ public class BoxDetector : MonoBehaviour
         {
             if (box == null) continue;
             box.RefreshCollisionIgnore(gameObject, skin);
+            box.ClearEffectStateForPlayer(gameObject);
 
             if (!box.CanStandOnBy(skin))
             {

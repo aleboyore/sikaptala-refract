@@ -207,7 +207,7 @@ public class ScriptableBox : MonoBehaviour, ICheckpointRestorer
         PowerupEffect fx = GetContactEffect(playerState);
         if (fx != null)
         {
-            bool effectLocked = profile.lockContactEffect;
+            bool effectLocked = profile.lockContactEffect || effectLockedPlayers.Contains(player);
 
             bool canApplyEffect = true;
             if (effectLocked)
@@ -325,6 +325,20 @@ public class ScriptableBox : MonoBehaviour, ICheckpointRestorer
             player.transform.SetParent(null, true);
 
         player.GetComponent<PlayerController>()?.ClearGroundSupport(transform);
+    }
+
+    /// <summary>
+    /// Clear effect-applied tracking when the player changes skin while still in contact.
+    /// Also temporarily locks the effect to prevent immediate reapplication after the effect tracker has reset.
+    /// The player will need to exit and re-enter the box to get the effect again.
+    /// </summary>
+    public void ClearEffectStateForPlayer(GameObject player)
+    {
+        if (player == null) return;
+        effectAppliedSet.Remove(player);
+        // Lock the effect temporarily so it won't reapply immediately after the swap clears the effect tracker
+        effectLockedPlayers.Add(player);
+        Debug.Log($"[ScriptableBox] Cleared and locked effect state for player '{player.name}' on box '{gameObject.name}' due to skin swap");
     }
 
     private void LockForPlayer(GameObject player)
