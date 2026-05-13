@@ -22,7 +22,7 @@ MonoBehaviour:
   shardCanPush: 0
   veilCanPush: 0
   shardKillsOnPush: 0
-  veilKillsOnPush: 1
+  veilKillsOnPush: 0
   shardCanPassThrough: 1
   veilCanPassThrough: 0
   notVisibleToVeil: 0

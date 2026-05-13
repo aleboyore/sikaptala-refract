@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ef99a61b50589645b208f296c5ec793, type: 3}
   m_Name: DoubleJump2X
   m_EditorClassIdentifier: Assembly-CSharp::DoubleJumpEffect
-  sprite: {fileID: 0}
+  sprite: {fileID: 8714283907626228103, guid: 0505b48e5d4dc2741b8610d385739bb4, type: 3}
   spriteAnimation: {fileID: 0}
   animationSpeed: 1
   persistAcrossStateSwap: 0

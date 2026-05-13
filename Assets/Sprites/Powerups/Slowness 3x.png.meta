@@ -1,0 +1,504 @@
+fileFormatVersion: 2
+guid: 1579c5ac10b07774982fd76bd67e5824
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -5204243615245440266
+    second: Slowness 3x_0
+  - first:
+      213: -5228715691448486297
+    second: Slowness 3x_1
+  - first:
+      213: -1805338952058223407
+    second: Slowness 3x_2
+  - first:
+      213: -8852263709107213380
+    second: Slowness 3x_3
+  - first:
+      213: 8992059363971895385
+    second: Slowness 3x_4
+  - first:
+      213: 2794133741641952607
+    second: Slowness 3x_5
+  - first:
+      213: 7105538533048488399
+    second: Slowness 3x_6
+  - first:
+      213: -1052641079730504849
+    second: Slowness 3x_7
+  - first:
+      213: -1264259497004593796
+    second: Slowness 3x_8
+  - first:
+      213: -6717737767736412209
+    second: Slowness 3x_9
+  - first:
+      213: -5312099262364660513
+    second: Slowness 3x_10
+  - first:
+      213: 8736162918744067205
+    second: Slowness 3x_11
+  - first:
+      213: -1025895159279540591
+    second: Slowness 3x_12
+  - first:
+      213: -3118604956838209533
+    second: Slowness 3x_13
+  - first:
+      213: 5261155300366689185
+    second: Slowness 3x_14
+  - first:
+      213: 841953501469154735
+    second: Slowness 3x_15
+  - first:
+      213: -6845524070776537065
+    second: Slowness 3x_16
+  - first:
+      213: -3639143748618172618
+    second: Slowness 3x_17
+  - first:
+      213: -6185680978159982385
+    second: Slowness 3x_18
+  - first:
+      213: 890175362200373236
+    second: Slowness 3x_19
+  - first:
+      213: 6188810729549676602
+    second: Slowness 3x_20
+  - first:
+      213: -1396399412393215244
+    second: Slowness 3x_21
+  - first:
+      213: 8624065598631839134
+    second: Slowness 3x_22
+  - first:
+      213: 695769553122511793
+    second: Slowness 3x_23
+  - first:
+      213: -7596431528646474747
+    second: Slowness 3x_24
+  - first:
+      213: -559486404021500012
+    second: Slowness 3x_25
+  - first:
+      213: 5595880708435646134
+    second: Slowness 3x_26
+  - first:
+      213: -5191912449879166784
+    second: Slowness 3x_27
+  - first:
+      213: 4043456760347063330
+    second: Slowness 3x_28
+  - first:
+      213: -9048647240499280697
+    second: Slowness 3x_29
+  - first:
+      213: 3994019897938297367
+    second: Slowness 3x_30
+  - first:
+      213: -6587363582958175171
+    second: Slowness 3x_31
+  - first:
+      213: 7792246029153115418
+    second: Slowness 3x_32
+  - first:
+      213: -2658683763846977229
+    second: Slowness 3x_33
+  - first:
+      213: 211394984684117021
+    second: Slowness 3x_34
+  - first:
+      213: -2660400460872443024
+    second: Slowness 3x_35
+  - first:
+      213: 7467280082278000198
+    second: Slowness 3x_36
+  - first:
+      213: 5830193325538318532
+    second: Slowness 3x_37
+  - first:
+      213: -3308027604449872325
+    second: Slowness 3x_38
+  - first:
+      213: 8522606999179875877
+    second: Slowness 3x_39
+  - first:
+      213: 2182732136713460648
+    second: Slowness 3x_40
+  - first:
+      213: -799407210280867454
+    second: Slowness 3x_41
+  - first:
+      213: -2837978098948367772
+    second: Slowness 3x_42
+  - first:
+      213: 5840173726041585206
+    second: Slowness 3x_43
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 64
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Slowness 3x_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6fa63b45100d6c7b0800000000000000
+      internalID: -5204243615245440266
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Slowness 3x_1
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 766b3b318cedf67b0800000000000000
+      internalID: -5228715691448486297
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Slowness 3x_2
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d4c467c9c522f6e0800000000000000
+      internalID: -1805338952058223407
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Slowness 3x_3
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cbb2590de01762580800000000000000
+      internalID: -8852263709107213380
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Slowness 3x_4
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95015cc79563acc70800000000000000
+      internalID: 8992059363971895385
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Slowness 3x_5
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5d608585d1c6c620800000000000000
+      internalID: 2794133741641952607
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Slowness 3x_6
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc1943826a1fb9260800000000000000
+      internalID: 7105538533048488399
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Slowness 3x_7
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6bfdaed3844461f0800000000000000
+      internalID: -1052641079730504849
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Slowness 3x_8
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7d80219fa2747ee0800000000000000
+      internalID: -1264259497004593796
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Slowness 3x_9
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc778d3a71dc5c2a0800000000000000
+      internalID: -6717737767736412209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Slowness 3x_10
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fdcc3279dd1a746b0800000000000000
+      internalID: -5312099262364660513
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 3938c938342908445b5fcb4f4b87d29c
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Slowness 3x_0: -5204243615245440266
+      Slowness 3x_1: -5228715691448486297
+      Slowness 3x_10: -5312099262364660513
+      Slowness 3x_2: -1805338952058223407
+      Slowness 3x_3: -8852263709107213380
+      Slowness 3x_4: 8992059363971895385
+      Slowness 3x_5: 2794133741641952607
+      Slowness 3x_6: 7105538533048488399
+      Slowness 3x_7: -1052641079730504849
+      Slowness 3x_8: -1264259497004593796
+      Slowness 3x_9: -6717737767736412209
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

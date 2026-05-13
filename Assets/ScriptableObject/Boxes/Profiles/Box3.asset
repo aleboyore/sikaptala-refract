@@ -17,7 +17,7 @@ MonoBehaviour:
   pushResistance: 2
   returnToRestSpeed: 0
   allowVerticalMovement: 1
-  shardCanStandOn: 0
+  shardCanStandOn: 1
   veilCanStandOn: 1
   shardCanPush: 0
   veilCanPush: 1

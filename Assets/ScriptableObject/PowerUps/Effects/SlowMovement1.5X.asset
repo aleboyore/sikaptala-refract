@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4992aab6f8f1af84c81ca22237a3e46c, type: 3}
   m_Name: SlowMovement1.5X
   m_EditorClassIdentifier: Assembly-CSharp::SlowMovementEffect
-  sprite: {fileID: 0}
+  sprite: {fileID: 334060254713000409, guid: 85276b99a87726045a2ae3043f0b9e89, type: 3}
   spriteAnimation: {fileID: 0}
   animationSpeed: 1
   persistAcrossStateSwap: 0
   oneShot: 0
-  scaleMultiplier: 1.5
+  speedMultiplier: 0.5
   duration: 100

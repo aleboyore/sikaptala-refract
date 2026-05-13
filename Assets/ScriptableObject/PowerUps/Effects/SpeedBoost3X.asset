@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66aadd0ef8e9d304c969f7f7828bfaf1, type: 3}
   m_Name: SpeedBoost3X
   m_EditorClassIdentifier: Assembly-CSharp::SpeedBoostEffect
-  sprite: {fileID: 0}
+  sprite: {fileID: -2373376181444461927, guid: 45598e607c990de4db00531fe248921c, type: 3}
   spriteAnimation: {fileID: 0}
   animationSpeed: 1
   persistAcrossStateSwap: 0

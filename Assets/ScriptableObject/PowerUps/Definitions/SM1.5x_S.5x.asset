@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd471207a748a1742bf61346b70ced87, type: 3}
+  m_Name: SM1.5x_S.5x
+  m_EditorClassIdentifier: Assembly-CSharp::PowerupDefinition
+  shardEffect: {fileID: 11400000, guid: 1af9b3bc8b2328c498f2309dc508814c, type: 2}
+  veilEffect: {fileID: 11400000, guid: 9c5a30ba25d96264795fe56cdbb3dbbb, type: 2}
+  shardSFX: {fileID: 0}
+  veilSFX: {fileID: 0}
+  shardSprite: {fileID: 0}
+  veilSprite: {fileID: 0}
+  shardAnimation: {fileID: 0}
+  veilAnimation: {fileID: 0}
+  animationSpeed: 1
+  consumeWhenEffectMissing: 1

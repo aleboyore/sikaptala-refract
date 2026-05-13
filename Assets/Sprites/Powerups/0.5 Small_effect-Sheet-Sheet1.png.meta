@@ -1,0 +1,523 @@
+fileFormatVersion: 2
+guid: be0c11d22d777414585dd9ffcdea4d47
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 7722724413405306478
+    second: 0.5 Small_effect-Sheet-Sheet1_0
+  - first:
+      213: 3640262731664325461
+    second: 0.5 Small_effect-Sheet-Sheet1_1
+  - first:
+      213: -1392346142059786013
+    second: 0.5 Small_effect-Sheet-Sheet1_2
+  - first:
+      213: 3539544267115247528
+    second: 0.5 Small_effect-Sheet-Sheet1_3
+  - first:
+      213: -337148753754210549
+    second: 0.5 Small_effect-Sheet-Sheet1_4
+  - first:
+      213: -5332384097475179030
+    second: 0.5 Small_effect-Sheet-Sheet1_5
+  - first:
+      213: -2589900273194266280
+    second: 0.5 Small_effect-Sheet-Sheet1_6
+  - first:
+      213: 4413230544516326014
+    second: 0.5 Small_effect-Sheet-Sheet1_7
+  - first:
+      213: -6300095792950404056
+    second: 0.5 Small_effect-Sheet-Sheet1_8
+  - first:
+      213: 5923130894080012810
+    second: 0.5 Small_effect-Sheet-Sheet1_9
+  - first:
+      213: 1657990660804499011
+    second: 0.5 Small_effect-Sheet-Sheet1_10
+  - first:
+      213: -4110357228816191694
+    second: 0.5 Small_effect-Sheet-Sheet1_11
+  - first:
+      213: -8596565719393936999
+    second: 0.5 Small_effect-Sheet-Sheet1_12
+  - first:
+      213: -8153386466509752123
+    second: 0.5 Small_effect-Sheet-Sheet1_13
+  - first:
+      213: -2232983099898506922
+    second: 0.5 Small_effect-Sheet-Sheet1_14
+  - first:
+      213: 1678343900274361775
+    second: 0.5 Small_effect-Sheet-Sheet1_15
+  - first:
+      213: 4033475169181604733
+    second: 0.5 Small_effect-Sheet-Sheet1_16
+  - first:
+      213: 1924876152283283799
+    second: 0.5 Small_effect-Sheet-Sheet1_17
+  - first:
+      213: -4568175345331305512
+    second: 0.5 Small_effect-Sheet-Sheet1_18
+  - first:
+      213: -6937044292406952621
+    second: 0.5 Small_effect-Sheet-Sheet1_19
+  - first:
+      213: 7096978211649052248
+    second: 0.5 Small_effect-Sheet-Sheet1_20
+  - first:
+      213: 7724843865950642024
+    second: 0.5 Small_effect-Sheet-Sheet1_21
+  - first:
+      213: -200422621030955688
+    second: 0.5 Small_effect-Sheet-Sheet1_22
+  - first:
+      213: 173869973893766600
+    second: 0.5 Small_effect-Sheet-Sheet1_23
+  - first:
+      213: -5986536408780964128
+    second: 0.5 Small_effect-Sheet-Sheet1_24
+  - first:
+      213: -5078799039767574566
+    second: 0.5 Small_effect-Sheet-Sheet1_25
+  - first:
+      213: -5757001744063386316
+    second: 0.5 Small_effect-Sheet-Sheet1_26
+  - first:
+      213: -2038571032757474336
+    second: 0.5 Small_effect-Sheet-Sheet1_27
+  - first:
+      213: -3356416305394225612
+    second: 0.5 Small_effect-Sheet-Sheet1_28
+  - first:
+      213: -2923874484350606071
+    second: 0.5 Small_effect-Sheet-Sheet1_29
+  - first:
+      213: 5922508097926347114
+    second: 0.5 Small_effect-Sheet-Sheet1_30
+  - first:
+      213: -4800231726546657524
+    second: 0.5 Small_effect-Sheet-Sheet1_31
+  - first:
+      213: -3144503520973931019
+    second: 0.5 Small_effect-Sheet-Sheet1_32
+  - first:
+      213: -8237229004950463080
+    second: 0.5 Small_effect-Sheet-Sheet1_33
+  - first:
+      213: 2396853153740025710
+    second: 0.5 Small_effect-Sheet-Sheet1_34
+  - first:
+      213: 6330889439508359126
+    second: 0.5 Small_effect-Sheet-Sheet1_35
+  - first:
+      213: 7967585202727261584
+    second: 0.5 Small_effect-Sheet-Sheet1_36
+  - first:
+      213: -7465797540177174112
+    second: 0.5 Small_effect-Sheet-Sheet1_37
+  - first:
+      213: -4761034652892726322
+    second: 0.5 Small_effect-Sheet-Sheet1_38
+  - first:
+      213: -2999523963269457864
+    second: 0.5 Small_effect-Sheet-Sheet1_39
+  - first:
+      213: 1836416614865131751
+    second: 0.5 Small_effect-Sheet-Sheet1_40
+  - first:
+      213: 4467602151088854964
+    second: 0.5 Small_effect-Sheet-Sheet1_41
+  - first:
+      213: -1092744096022178764
+    second: 0.5 Small_effect-Sheet-Sheet1_42
+  - first:
+      213: 5282337802727797753
+    second: 0.5 Small_effect-Sheet-Sheet1_43
+  - first:
+      213: 5817766987740682705
+    second: 0.5 Small_effect-Sheet-Sheet1_44
+  - first:
+      213: -4989021174313565931
+    second: 0.5 Small_effect-Sheet-Sheet1_45
+  - first:
+      213: -3283688032084322441
+    second: 0.5 Small_effect-Sheet-Sheet1_46
+  - first:
+      213: -1732183851874000084
+    second: 0.5 Small_effect-Sheet-Sheet1_47
+  - first:
+      213: 8265254547028669204
+    second: 0.5 Small_effect-Sheet-Sheet1_48
+  - first:
+      213: -5138853849599674602
+    second: 0.5 Small_effect-Sheet-Sheet1_49
+  - first:
+      213: -5623837527470092494
+    second: 0.5 Small_effect-Sheet-Sheet1_50
+  - first:
+      213: -1822536390864591970
+    second: 0.5 Small_effect-Sheet-Sheet1_51
+  - first:
+      213: -6484105645963181328
+    second: 0.5 Small_effect-Sheet-Sheet1_52
+  - first:
+      213: 6144943245653549246
+    second: 0.5 Small_effect-Sheet-Sheet1_53
+  - first:
+      213: 628897712792488700
+    second: 0.5 Small_effect-Sheet-Sheet1_54
+  - first:
+      213: -5226852326252251421
+    second: 0.5 Small_effect-Sheet-Sheet1_55
+  - first:
+      213: 2589440116930139937
+    second: 0.5 Small_effect-Sheet-Sheet1_56
+  - first:
+      213: -2786020538601420942
+    second: 0.5 Small_effect-Sheet-Sheet1_57
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 64
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: 0.5 Small_effect-Sheet-Sheet1_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e6e924fefe0ac2b60800000000000000
+      internalID: 7722724413405306478
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 0.5 Small_effect-Sheet-Sheet1_1
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 55bf1f1eaafc48230800000000000000
+      internalID: 3640262731664325461
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 0.5 Small_effect-Sheet-Sheet1_2
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e0142e8f846dace0800000000000000
+      internalID: -1392346142059786013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 0.5 Small_effect-Sheet-Sheet1_3
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a7bc24f1ccfe1130800000000000000
+      internalID: 3539544267115247528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 0.5 Small_effect-Sheet-Sheet1_4
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0fb308aef4325bf0800000000000000
+      internalID: -337148753754210549
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 0.5 Small_effect-Sheet-Sheet1_5
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aedcc006ae09ff5b0800000000000000
+      internalID: -5332384097475179030
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 0.5 Small_effect-Sheet-Sheet1_6
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 85191946c63de0cd0800000000000000
+      internalID: -2589900273194266280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 0.5 Small_effect-Sheet-Sheet1_7
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e72acc54cc1fe3d30800000000000000
+      internalID: 4413230544516326014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 0.5 Small_effect-Sheet-Sheet1_8
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 82c124271409198a0800000000000000
+      internalID: -6300095792950404056
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 0.5 Small_effect-Sheet-Sheet1_9
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a02f7c38a20333250800000000000000
+      internalID: 5923130894080012810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: e0456eb3f7f4aac4bbd4f20212203b50
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      0.5 Small_effect-Sheet-Sheet1_0: 7722724413405306478
+      0.5 Small_effect-Sheet-Sheet1_1: 3640262731664325461
+      0.5 Small_effect-Sheet-Sheet1_2: -1392346142059786013
+      0.5 Small_effect-Sheet-Sheet1_3: 3539544267115247528
+      0.5 Small_effect-Sheet-Sheet1_4: -337148753754210549
+      0.5 Small_effect-Sheet-Sheet1_5: -5332384097475179030
+      0.5 Small_effect-Sheet-Sheet1_6: -2589900273194266280
+      0.5 Small_effect-Sheet-Sheet1_7: 4413230544516326014
+      0.5 Small_effect-Sheet-Sheet1_8: -6300095792950404056
+      0.5 Small_effect-Sheet-Sheet1_9: 5923130894080012810
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

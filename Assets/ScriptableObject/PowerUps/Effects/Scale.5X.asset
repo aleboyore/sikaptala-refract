@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6c79bdfc9a0d7a44b92d52b0d57fea8, type: 3}
   m_Name: Scale.5X
   m_EditorClassIdentifier: Assembly-CSharp::ScaleCharacterEffect
-  sprite: {fileID: 0}
+  sprite: {fileID: 7722724413405306478, guid: be0c11d22d777414585dd9ffcdea4d47, type: 3}
   spriteAnimation: {fileID: 0}
   animationSpeed: 1
   persistAcrossStateSwap: 0

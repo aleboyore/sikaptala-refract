@@ -1,0 +1,347 @@
+fileFormatVersion: 2
+guid: 85276b99a87726045a2ae3043f0b9e89
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 334060254713000409
+    second: Slowness 1.5x_0
+  - first:
+      213: -8484574029959910017
+    second: Slowness 1.5x_1
+  - first:
+      213: -6066771686612989906
+    second: Slowness 1.5x_2
+  - first:
+      213: 6162439968572749576
+    second: Slowness 1.5x_3
+  - first:
+      213: -5375657052138849630
+    second: Slowness 1.5x_4
+  - first:
+      213: 8037722583198615657
+    second: Slowness 1.5x_5
+  - first:
+      213: -4027862788373585802
+    second: Slowness 1.5x_6
+  - first:
+      213: -1668320918963355942
+    second: Slowness 1.5x_7
+  - first:
+      213: 9211279920631183270
+    second: Slowness 1.5x_8
+  - first:
+      213: -339509699355666225
+    second: Slowness 1.5x_9
+  - first:
+      213: -7627909908945948617
+    second: Slowness 1.5x_10
+  - first:
+      213: -4288368393336891150
+    second: Slowness 1.5x_11
+  - first:
+      213: -4476073387167858815
+    second: Slowness 1.5x_12
+  - first:
+      213: -5367679866098020727
+    second: Slowness 1.5x_13
+  - first:
+      213: -8788574149998064004
+    second: Slowness 1.5x_14
+  - first:
+      213: 5015044168402707488
+    second: Slowness 1.5x_15
+  - first:
+      213: 2167554464321173296
+    second: Slowness 1.5x_16
+  - first:
+      213: -8964021872704336501
+    second: Slowness 1.5x_17
+  - first:
+      213: 7337137474789795707
+    second: Slowness 1.5x_18
+  - first:
+      213: -8719514352830776704
+    second: Slowness 1.5x_19
+  - first:
+      213: 4223825946223606758
+    second: Slowness 1.5x_20
+  - first:
+      213: 7898720002614060597
+    second: Slowness 1.5x_21
+  - first:
+      213: 4661627585509801340
+    second: Slowness 1.5x_22
+  - first:
+      213: -650516838574811350
+    second: Slowness 1.5x_23
+  - first:
+      213: -6283107304779049302
+    second: Slowness 1.5x_24
+  - first:
+      213: 5364892668975290890
+    second: Slowness 1.5x_25
+  - first:
+      213: 8631716086568015164
+    second: Slowness 1.5x_26
+  - first:
+      213: -2041423362500516982
+    second: Slowness 1.5x_27
+  - first:
+      213: 7053747468003559421
+    second: Slowness 1.5x_28
+  - first:
+      213: 4095788754738776540
+    second: Slowness 1.5x_29
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 64
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Slowness 1.5x_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d1bebf1802d2a400800000000000000
+      internalID: 334060254713000409
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Slowness 1.5x_1
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f7d2cb97fdcb04a80800000000000000
+      internalID: -8484574029959910017
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Slowness 1.5x_2
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e28090e4b4f7ecba0800000000000000
+      internalID: -6066771686612989906
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Slowness 1.5x_3
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 807b27c5082658550800000000000000
+      internalID: 6162439968572749576
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Slowness 1.5x_4
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2aab0fc7464d565b0800000000000000
+      internalID: -5375657052138849630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Slowness 1.5x_5
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96840be8a1abb8f60800000000000000
+      internalID: 8037722583198615657
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 64a8088dfe7b5b545b57e48a8e46982c
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Slowness 1.5x_0: 334060254713000409
+      Slowness 1.5x_1: -8484574029959910017
+      Slowness 1.5x_2: -6066771686612989906
+      Slowness 1.5x_3: 6162439968572749576
+      Slowness 1.5x_4: -5375657052138849630
+      Slowness 1.5x_5: 8037722583198615657
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
