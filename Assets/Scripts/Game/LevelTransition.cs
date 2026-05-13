@@ -8,6 +8,11 @@ public class LevelTransition : MonoBehaviour
     public Animator fadeAnimator;
     public float transitionTime = 1f;
 
+    [Header("SFX")]
+    public AudioSource sfxSource;          // audio source
+    public AudioClip transitionClip;       // your goal/portal sound (.wav file)
+    public float sfxVolume = 1f;
+
     private bool isTransitioning = false;
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -16,6 +21,11 @@ public class LevelTransition : MonoBehaviour
         if ((collision.CompareTag("Shard") || collision.CompareTag("Veil")) && !isTransitioning)
         {
             isTransitioning = true; // Lock the door
+
+            // Play SFX once
+            if (sfxSource != null && transitionClip != null)
+                sfxSource.PlayOneShot(transitionClip, sfxVolume);
+
             StartCoroutine(LoadNextLevelOrMainMenu());
         }
     }
