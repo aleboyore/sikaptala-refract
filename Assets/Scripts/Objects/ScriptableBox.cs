@@ -405,11 +405,11 @@ public class ScriptableBox : MonoBehaviour, ICheckpointRestorer
     {
         if (rb == null) rb = GetComponent<Rigidbody2D>();
 
-        // The checkpoint restore loop already restored the active state and transform.
-        // Only reset runtime physics and contact bookkeeping here.
-        rb.bodyType = RigidbodyType2D.Dynamic;
-        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        // The checkpoint restore loop already restored the active state, transform,
+        // and serialized component state. Do not overwrite those values here.
+        // Only clear runtime motion and contact bookkeeping.
         rb.linearVelocity = Vector2.zero;
+        rb.angularVelocity = 0f;
         restPosition = rb.position;
 
         // Clear all contact and lock state so the box can behave normally after respawn.
