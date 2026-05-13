@@ -278,6 +278,15 @@ public class GameManager : MonoBehaviour
 			yield break;
 		}
 
+		// BUG FIX: Unparent player before restoring world state.
+		// The player may have been parented to a box while standing on it.
+		// If we restore that box's SetActive state, the player would become inactive too.
+		if (_player != null && _player.transform.parent != null)
+		{
+			Debug.Log($"[GameManager] Unparenting player from '{_player.transform.parent.name}' before restoring checkpoint");
+			_player.transform.SetParent(null);
+		}
+
 		_player.ResetToCheckpoint(respawnPos);
 
 		Debug.Log($"[GameManager] Respawned player at {respawnPos} (rev {currentRevision})");
@@ -320,8 +329,7 @@ public class GameManager : MonoBehaviour
 		}
 
 		CheckpointManager.Instance.CaptureInitialSnapshot(_levelOriginalSpawnPoint);
-		CheckpointManager.Instance.SaveCheckpoint(_levelOriginalSpawnPoint);
-		Debug.Log($"[GameManager] Seeded spawn checkpoint at x = {_levelOriginalSpawnPoint.x}, y = {_levelOriginalSpawnPoint.y}");
+		Debug.Log($"[GameManager] Captured spawn baseline at x = {_levelOriginalSpawnPoint.x}, y = {_levelOriginalSpawnPoint.y}");
 	}
 
 	private void LoadFirstLevel()

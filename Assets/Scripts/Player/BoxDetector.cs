@@ -133,18 +133,29 @@ public class BoxDetector : MonoBehaviour
 
         // Probe only a thin slice just beyond the player's collider face in the requested direction.
         RaycastHit2D hit = Physics2D.BoxCast(origin, size, 0f, direction, raycastPadding, boxLayer);
+        
         if (hit.collider == null)
+        {
+            // Debug raycast misses for downward direction (jumping)
+            if (direction == Vector2.down)
+            {
+                Debug.Log($"[BoxDetector] RAYCAST MISS dir={direction} at origin={origin} size={size} padding={raycastPadding} boxLayer={boxLayer}");
+            }
             return;
+        }
 
         ScriptableBox box = hit.collider.GetComponent<ScriptableBox>();
         if (box == null)
+        {
+            Debug.LogWarning($"[BoxDetector] Hit collider '{hit.collider.name}' but no ScriptableBox component found");
             return;
+        }
 
         // Log detection details for debugging push/fall-through gating
         PlayerSkinState skin = _charState != null ? _charState.current : default;
         try
         {
-            Debug.Log($"[BoxDetector] Detected box '{hit.collider.name}' dir={direction} skin={skin} canPush={box.CanBePushedBy(skin)} canPass={box.CanPassThroughBy(skin)}");
+            Debug.Log($"[BoxDetector] RAYCAST HIT box '{hit.collider.name}' dir={direction} skin={skin} canPush={box.CanBePushedBy(skin)} canPass={box.CanPassThroughBy(skin)} canStandOn={box.CanStandOnBy(skin)}");
         }
         catch (System.Exception ex)
         {
