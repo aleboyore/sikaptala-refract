@@ -39,6 +39,11 @@ public class CheckpointManager : MonoBehaviour
 		return go != null && (go.GetComponentInParent<PlayerController>() != null || go.transform.root.CompareTag("Player"));
 	}
 
+	private static bool IsSceneInstance(GameObject go)
+	{
+		return go != null && go.scene.IsValid() && go.scene.isLoaded;
+	}
+
 	private void Awake() 
 	{
 		if (Instance == null)
@@ -77,6 +82,8 @@ public class CheckpointManager : MonoBehaviour
 		foreach (var id in identities)
 		{
 			var go = id.gameObject;
+			if (!IsSceneInstance(go))
+				continue;
 
 			// If this identity belongs to the player, skip toggling it here.
 			// GameManager is responsible for player lifecycle (spawn/respawn/etc.).
@@ -234,6 +241,8 @@ public class CheckpointManager : MonoBehaviour
 		foreach (var id in identities)
 		{
 			var go = id.gameObject;
+			if (!IsSceneInstance(go))
+				continue;
 			if (IsPlayerHierarchy(go))
 				continue;
 			snapshot.entries.Add(new CheckpointEntry
@@ -276,6 +285,8 @@ public class CheckpointManager : MonoBehaviour
 		foreach (var id in identities)
 		{
 			var go = id.gameObject;
+			if (!IsSceneInstance(go))
+				continue;
 			if (IsPlayerHierarchy(go))
 				continue;
 			if (lookup.TryGetValue(id.Id, out var entry))

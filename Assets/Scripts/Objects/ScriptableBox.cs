@@ -295,13 +295,9 @@ public class ScriptableBox : MonoBehaviour, ICheckpointRestorer
         {
             if (spriteRenderer == null) continue;
 
-            // If this renderer is part of the player's hierarchy (player parented to box), skip it.
-            if (spriteRenderer.GetComponentInParent<PlayerController>() != null)
-                continue;
-
-            // Ensure the renderer actually belongs to this box instance (avoid toggling shared or nested visuals)
-            ScriptableBox ownerBox = spriteRenderer.GetComponentInParent<ScriptableBox>();
-            if (ownerBox != this)
+            // If this renderer is part of another gameplay object, skip it.
+            // This prevents a box visibility rule from leaking into nested/adjacent blocks that share the same prefab tree.
+            if (!IsOwnedVisibilityRenderer(spriteRenderer))
                 continue;
 
             spriteRenderer.enabled = !isNotVisible;
@@ -309,6 +305,26 @@ public class ScriptableBox : MonoBehaviour, ICheckpointRestorer
         }
 
         Debug.Log($"[ScriptableBox] RefreshVisibility '{gameObject.name}' playerState={playerState} isNotVisible={isNotVisible}");
+    }
+
+    private bool IsOwnedVisibilityRenderer(SpriteRenderer spriteRenderer)
+    {
+        if (spriteRenderer == null) return false;
+
+        // Only touch renderers that are actually under this box.
+        ScriptableBox ownerBox = spriteRenderer.GetComponentInParent<ScriptableBox>();
+        if (ownerBox != this)
+            return false;
+
+        // Do not let visibility rules reach into nested gameplay objects.
+        if (spriteRenderer.GetComponentInParent<PlayerController>() != null)
+            return false;
+        if (spriteRenderer.GetComponentInParent<PowerupBehavior>() != null)
+            return false;
+        if (spriteRenderer.GetComponentInParent<CheckpointIdentity>() != null && spriteRenderer.GetComponent<CheckpointIdentity>() == null)
+            return false;
+
+        return true;
     }
 
     /// <summary>
