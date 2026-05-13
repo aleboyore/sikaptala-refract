@@ -24,7 +24,7 @@ MonoBehaviour:
   shardKillsOnPush: 0
   veilKillsOnPush: 0
   shardCanPassThrough: 0
-  veilCanPassThrough: 0
+  veilCanPassThrough: 1
   notVisibleToVeil: 1
   notVisibleToShard: 0
   oneWayEnabled: 0
@@ -38,3 +38,4 @@ MonoBehaviour:
   shardContactEffect: {fileID: 0}
   veilContactEffect: {fileID: 0}
   contactEffectRepeats: 0
+  lockContactEffect: 0
