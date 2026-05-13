@@ -125,28 +125,15 @@ public class PowerupBehavior : MonoBehaviour, ICheckpointRestorer
     /// </summary>
     public void RestoreToCheckpoint()
     {
+        // Mark as not consumed so player can collect again
         _consumed = false;
-        // Ensure the powerup is active and collider is enabled for interaction
-        if (!gameObject.activeInHierarchy)
-        {
-            gameObject.SetActive(true);
-            Debug.Log($"[Checkpoint] Powerup '{gameObject.name}' re-enabled (was deactivated)");
-        }
         
-        Collider2D col = GetComponent<Collider2D>();
-        if (col != null && !col.enabled)
+        // If this powerup was active at checkpoint, ensure collider is enabled for collection
+        if (gameObject.activeInHierarchy)
         {
-            col.enabled = true;
-            Debug.Log($"[Checkpoint] Powerup '{gameObject.name}' collider re-enabled");
-        }
-        
-        Debug.Log($"[Checkpoint] Powerup '{gameObject.name}' restored. Final state: active={gameObject.activeInHierarchy}, collider.enabled={col?.enabled}");
-    
-        // Safety check: if still inactive after all steps, force enable
-        if (!gameObject.activeInHierarchy)
-        {
-            Debug.LogWarning($"[Checkpoint] SAFETY: Powerup '{gameObject.name}' was still inactive after restore, forcing SetActive(true)!");
-            gameObject.SetActive(true);
+            Collider2D col = GetComponent<Collider2D>();
+            if (col != null && !col.enabled)
+                col.enabled = true;
         }
     }
 

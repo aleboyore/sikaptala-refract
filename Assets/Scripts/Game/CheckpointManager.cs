@@ -101,19 +101,17 @@ public class CheckpointManager : MonoBehaviour
 				continue;
 			
 			// Capture component state (rigidbody type, collider state, etc.) for boxes only
-			// Powerups manage their own lifecycle and collider state in RestoreToCheckpoint()
 			SerializedComponentState compState = null;
 			if (go.GetComponent<ScriptableBox>() != null)
 			{
 				compState = new SerializedComponentState(go);
 			}
-			bool isPowerup = go.GetComponent<PowerupBehavior>() != null;
 			
 			var entry = new CheckpointEntry
 			{
 				id = id.Id,
 				prefabName = id.PrefabName,
-				active = isPowerup ? true : go.activeInHierarchy,
+				active = go.activeInHierarchy,
 				position = go.transform.position,
 				rotation = go.transform.rotation.eulerAngles,
 				scale = go.transform.localScale,
@@ -195,8 +193,7 @@ public class CheckpointManager : MonoBehaviour
 			if (lookup.TryGetValue(id.Id, out var entry))
 			{
 				// Object existed at checkpoint: restore transform and active state
-				bool isPowerup = go.GetComponent<PowerupBehavior>() != null;
-				go.SetActive(isPowerup ? true : entry.active);
+				go.SetActive(entry.active);
 				go.transform.position = entry.position;
 				go.transform.rotation = Quaternion.Euler(entry.rotation);
 				go.transform.localScale = entry.scale;
@@ -205,7 +202,6 @@ public class CheckpointManager : MonoBehaviour
 				if (entry.componentState != null)
 				{
 					entry.componentState.Apply(go);
-					Debug.Log($"[Checkpoint] Restored component state for '{go.name}'");
 				}
 
 				var restorer = go.GetComponent<ICheckpointRestorer>();
@@ -276,19 +272,17 @@ public class CheckpointManager : MonoBehaviour
 				continue;
 			
 			// Capture component state for boxes only
-			// Powerups manage their own lifecycle in RestoreToCheckpoint()
 			SerializedComponentState compState = null;
 			if (go.GetComponent<ScriptableBox>() != null)
 			{
 				compState = new SerializedComponentState(go);
 			}
-			bool isPowerup = go.GetComponent<PowerupBehavior>() != null;
 			
 			snapshot.entries.Add(new CheckpointEntry
 			{
 				id = id.Id,
 				prefabName = id.PrefabName,
-				active = isPowerup ? true : go.activeInHierarchy,
+				active = go.activeInHierarchy,
 				position = go.transform.position,
 				rotation = go.transform.rotation.eulerAngles,
 				scale = go.transform.localScale,
