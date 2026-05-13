@@ -140,7 +140,14 @@ public class PowerupBehavior : MonoBehaviour, ICheckpointRestorer
             Debug.Log($"[Checkpoint] Powerup '{gameObject.name}' collider re-enabled");
         }
         
-        Debug.Log($"[Checkpoint] Powerup '{gameObject.name}' restored to available state");
+        Debug.Log($"[Checkpoint] Powerup '{gameObject.name}' restored. Final state: active={gameObject.activeInHierarchy}, collider.enabled={col?.enabled}");
+    
+        // Safety check: if still inactive after all steps, force enable
+        if (!gameObject.activeInHierarchy)
+        {
+            Debug.LogWarning($"[Checkpoint] SAFETY: Powerup '{gameObject.name}' was still inactive after restore, forcing SetActive(true)!");
+            gameObject.SetActive(true);
+        }
     }
 
     /// <summary>

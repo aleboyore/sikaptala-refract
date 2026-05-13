@@ -100,9 +100,10 @@ public class CheckpointManager : MonoBehaviour
 			if (IsPlayerHierarchy(go))
 				continue;
 			
-			// Capture component state (rigidbody type, collider state, etc.) for boxes and powerups
+			// Capture component state (rigidbody type, collider state, etc.) for boxes only
+			// Powerups manage their own lifecycle and collider state in RestoreToCheckpoint()
 			SerializedComponentState compState = null;
-			if (go.GetComponent<ScriptableBox>() != null || go.GetComponent<PowerupBehavior>() != null)
+			if (go.GetComponent<ScriptableBox>() != null)
 			{
 				compState = new SerializedComponentState(go);
 			}
@@ -272,9 +273,10 @@ public class CheckpointManager : MonoBehaviour
 			if (IsPlayerHierarchy(go))
 				continue;
 			
-			// Capture component state for boxes and powerups
+			// Capture component state for boxes only
+			// Powerups manage their own lifecycle in RestoreToCheckpoint()
 			SerializedComponentState compState = null;
-			if (go.GetComponent<ScriptableBox>() != null || go.GetComponent<PowerupBehavior>() != null)
+			if (go.GetComponent<ScriptableBox>() != null)
 			{
 				compState = new SerializedComponentState(go);
 			}
