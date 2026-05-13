@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7601d3f6d9e554445a602bd9a997e313, type: 3}
   m_Name: PlayerStats
   m_EditorClassIdentifier: Assembly-CSharp::ScriptableStats
-  MaxSpeed: 14
+  MaxSpeed: 10
   Acceleration: 120
   GroundDeceleration: 60
   AirDeceleration: 0
   GroundingForce: -1.5
   GrounderDistance: 0.05
-  JumpPower: 36
+  JumpPower: 30
   MaxFallSpeed: 15
   FallAcceleration: 80
   JumpEndEarlyGravityModifier: 3
