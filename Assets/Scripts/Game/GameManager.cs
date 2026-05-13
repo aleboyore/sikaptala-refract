@@ -315,6 +315,7 @@ public class GameManager : MonoBehaviour
 	// until CheckpointManager.Instance is ready or a timeout expires.
 	private IEnumerator CaptureInitialSnapshotWhenReady()
 	{
+		// Wait for CheckpointManager to initialize (it lives in the scene, GameManager is DontDestroyOnLoad).
 		float timeout = 3f;
 		while (CheckpointManager.Instance == null && timeout > 0f)
 		{
@@ -324,9 +325,14 @@ public class GameManager : MonoBehaviour
 
 		if (CheckpointManager.Instance == null)
 		{
-			Debug.LogWarning("[GameManager] CheckpointManager never became available — initial snapshot not captured. Deaths before any checkpoint will not restore world state.");
+			Debug.LogWarning("[GameManager] CheckpointManager never became available — initial snapshot not captured.");
 			yield break;
 		}
+
+		// Wait one additional frame so every scene object's Awake() has finished running.
+		// CheckpointIdentity.Awake() assigns the GUID — if we snapshot before it runs,
+		// the powerup is stored with id="" and is never found on restore.
+		yield return null;
 
 		CheckpointManager.Instance.CaptureInitialSnapshot(_levelOriginalSpawnPoint);
 		Debug.Log($"[GameManager] Captured spawn baseline at x = {_levelOriginalSpawnPoint.x}, y = {_levelOriginalSpawnPoint.y}");

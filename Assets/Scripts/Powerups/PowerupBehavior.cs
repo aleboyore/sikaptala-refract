@@ -115,34 +115,32 @@ public class PowerupBehavior : MonoBehaviour, ICheckpointRestorer
                 effect.Apply(other.gameObject);
         }
 
-        // Mark as consumed - deactivate instead of destroy so we can restore on checkpoint
+        // Deactivate instead of destroy so CheckpointManager can find and restore us.
         gameObject.SetActive(false);
     }
 
     /// <summary>
-    /// Restore this powerup to its checkpoint state (not consumed).
-    /// Called when player dies and respawns at a checkpoint after this powerup was collected.
+    /// Restore internal state to uncollected. Called by CheckpointManager after it has
+    /// already set SetActive(entry.active) from the snapshot — do NOT call SetActive here.
     /// </summary>
     public void RestoreToCheckpoint()
     {
-        // CheckpointManager already called go.SetActive(entry.active) before calling this,
-        // so we only need to reset internal consumed state. Do NOT call SetActive here.
         _consumed = false;
 
+        // Re-enable the collider in case something disabled it separately.
         Collider2D col = GetComponent<Collider2D>();
-        if (col != null)
-            col.enabled = true;
+        if (col != null) col.enabled = true;
 
-        Debug.Log($"[Checkpoint] Powerup '{gameObject.name}' restored: _consumed=false, active={gameObject.activeInHierarchy}");
+        Debug.Log($"[Checkpoint] Powerup '{gameObject.name}' restored: active={gameObject.activeInHierarchy}");
     }
 
     /// <summary>
     /// Revert if this powerup was created after the checkpoint.
-    /// Deactivates it so it doesn't affect the restored world state.
+    /// CheckpointManager will also call SetActive(false) before this.
     /// </summary>
     public void RevertPostCheckpoint()
     {
-        gameObject.SetActive(false);
-        Debug.Log($"[Checkpoint] Powerup {gameObject.name} reverted (post-checkpoint)");
+        _consumed = true;
+        Debug.Log($"[Checkpoint] Powerup '{gameObject.name}' reverted (post-checkpoint)");
     }
 }

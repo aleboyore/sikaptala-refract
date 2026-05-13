@@ -28,10 +28,8 @@ public class CheckpointManager : MonoBehaviour
 	private CheckpointSnapshot _initialSnapshot;
 	private bool _hasInitialSnapshot = false;
 
-	// Snapshot stored for the current checkpoint (in-memory and optional JSON on disk)
 	private CheckpointSnapshot _currentSnapshot;
 
-	// Track objects that were active at the current checkpoint (legacy quick set)
 	private HashSet<GameObject> _checkpointActiveObjects = new();
 
 	private static bool IsPlayerHierarchy(GameObject go)
@@ -77,7 +75,6 @@ public class CheckpointManager : MonoBehaviour
 		PlayerPosition = playerPos;
 		Debug.Log($"[Checkpoint] Spawn updated: x = {playerPos.x}, y = {playerPos.y}");
 		CheckpointRevision++;
-		// Build a snapshot of all objects with persistent identity
 		_currentSnapshot = new CheckpointSnapshot
 		{
 			revision = CheckpointRevision,
@@ -92,26 +89,27 @@ public class CheckpointManager : MonoBehaviour
 		foreach (var id in identities)
 		{
 			var go = id.gameObject;
-			if (!IsSceneInstance(go))
-				continue;
+			if (!IsSceneInstance(go)) continue;
+			if (IsPlayerHierarchy(go)) continue;
 
-			// If this identity belongs to the player, skip toggling it here.
-			// GameManager is responsible for player lifecycle (spawn/respawn/etc.).
-			if (IsPlayerHierarchy(go))
+			// Skip any identity whose GUID hasn't been assigned yet — these are
+			// objects whose Awake() hasn't run, snapshotting them with id="" would
+			// create a poisoned entry that matches nothing on restore.
+			if (string.IsNullOrEmpty(id.Id))
+			{
+				Debug.LogWarning($"[Checkpoint] Skipping '{go.name}' — CheckpointIdentity has no ID yet (Awake not run?)");
 				continue;
-			
-			// Capture component state for boxes (rigidbody type, collider state, etc.)
+			}
+
 			SerializedComponentState compState = null;
 			if (go.GetComponent<ScriptableBox>() != null)
-			{
 				compState = new SerializedComponentState(go);
-			}
 
 			var entry = new CheckpointEntry
 			{
 				id = id.Id,
 				prefabName = id.PrefabName,
-				active = go.activeInHierarchy, // always use the real active state
+				active = go.activeInHierarchy,
 				position = go.transform.position,
 				rotation = go.transform.rotation.eulerAngles,
 				scale = go.transform.localScale,
@@ -119,28 +117,17 @@ public class CheckpointManager : MonoBehaviour
 			};
 
 			_currentSnapshot.entries.Add(entry);
-
 			if (go.activeInHierarchy) _checkpointActiveObjects.Add(go);
-			
-			// Debug powerup capture
-			if (go.GetComponent<PowerupBehavior>() != null)
-			{
-				Debug.Log($"[Checkpoint] CAPTURED powerup '{go.name}' active={entry.active}");
-			}
 		}
 
-		// Capture player effect state if available
 		var playerCtrl = FindAnyObjectByType<PlayerController>();
 		if (playerCtrl != null)
 		{
 			var tracker = playerCtrl.GetComponent<EffectTracker>();
 			if (tracker != null)
-			{
 				_currentSnapshot.playerEffects = tracker.CaptureState();
-			}
 		}
 
-		// Optional: write snapshot to disk for debugging/inspection
 		try
 		{
 			string json = JsonUtility.ToJson(_currentSnapshot, true);
@@ -167,12 +154,11 @@ public class CheckpointManager : MonoBehaviour
 
 		_initialSnapshot = CaptureSnapshot(0, playerPos);
 		_hasInitialSnapshot = true;
-		Debug.Log($"[Checkpoint] Captured initial spawn snapshot at {playerPos}");
+		Debug.Log($"[Checkpoint] Captured initial spawn snapshot ({_initialSnapshot.entries.Count} entries) at {playerPos}");
 	}
 
 	/// <summary>
 	/// Restore world state using the saved snapshot for the current checkpoint.
-	/// If no snapshot exists, this is a no-op.
 	/// </summary>
 	public void RestoreFromSnapshot()
 	{
@@ -182,7 +168,6 @@ public class CheckpointManager : MonoBehaviour
 			return;
 		}
 
-		// Build a lookup of snapshot entries by id
 		var lookup = new Dictionary<string, CheckpointEntry>();
 		foreach (var e in _currentSnapshot.entries)
 			lookup[e.id] = e;
@@ -191,44 +176,30 @@ public class CheckpointManager : MonoBehaviour
 		foreach (var id in identities)
 		{
 			var go = id.gameObject;
-
-			// Never toggle the player object here; GameManager owns player lifecycle.
-			if (go != null && go.CompareTag("Player"))
-				continue;
+			if (go != null && go.CompareTag("Player")) continue;
 
 			if (lookup.TryGetValue(id.Id, out var entry))
 			{
-				// Restore transform and active state from snapshot exactly as captured.
 				go.SetActive(entry.active);
 				go.transform.position = entry.position;
 				go.transform.rotation = Quaternion.Euler(entry.rotation);
 				go.transform.localScale = entry.scale;
 
-				// Restore component state (rigidbody type, etc.) for boxes.
 				if (entry.componentState != null)
-				{
 					entry.componentState.Apply(go);
-					Debug.Log($"[Checkpoint] Restored component state for '{go.name}'");
-				}
 
-				var restorer = go.GetComponent<ICheckpointRestorer>();
-				restorer?.RestoreToCheckpoint();
+				go.GetComponent<ICheckpointRestorer>()?.RestoreToCheckpoint();
 			}
 			else
 			{
-				// Object not in snapshot -> created after checkpoint, revert
-				// Skip player objects to avoid deactivating the player during restore
-				if (go != null && go.CompareTag("Player"))
-					continue;
+				if (go != null && go.CompareTag("Player")) continue;
 				go.SetActive(false);
-				var restorer = go.GetComponent<ICheckpointRestorer>();
-				restorer?.RevertPostCheckpoint();
+				go.GetComponent<ICheckpointRestorer>()?.RevertPostCheckpoint();
 			}
 		}
 
 		Debug.Log($"[Checkpoint] Restored world state from snapshot rev {_currentSnapshot.revision}");
 
-		// Restore player effects if snapshot contains them
 		if (_currentSnapshot.playerEffects != null && _currentSnapshot.playerEffects.Count > 0)
 		{
 			var playerCtrl = FindAnyObjectByType<PlayerController>();
@@ -273,23 +244,26 @@ public class CheckpointManager : MonoBehaviour
 		foreach (var id in identities)
 		{
 			var go = id.gameObject;
-			if (!IsSceneInstance(go))
+			if (!IsSceneInstance(go)) continue;
+			if (IsPlayerHierarchy(go)) continue;
+
+			// Skip uninitialized identities — snapshotting with id="" creates a poisoned
+			// entry that will never match anything on restore.
+			if (string.IsNullOrEmpty(id.Id))
+			{
+				Debug.LogWarning($"[Checkpoint] Skipping '{go.name}' in initial snapshot — CheckpointIdentity has no ID yet");
 				continue;
-			if (IsPlayerHierarchy(go))
-				continue;
-			
-			// Capture component state for boxes only
+			}
+
 			SerializedComponentState compState = null;
 			if (go.GetComponent<ScriptableBox>() != null)
-			{
 				compState = new SerializedComponentState(go);
-			}
 
 			snapshot.entries.Add(new CheckpointEntry
 			{
 				id = id.Id,
 				prefabName = id.PrefabName,
-				active = go.activeInHierarchy, // always use the real active state
+				active = go.activeInHierarchy,
 				position = go.transform.position,
 				rotation = go.transform.rotation.eulerAngles,
 				scale = go.transform.localScale,
@@ -302,9 +276,7 @@ public class CheckpointManager : MonoBehaviour
 		{
 			var tracker = playerCtrl.GetComponent<EffectTracker>();
 			if (tracker != null)
-			{
 				snapshot.playerEffects = tracker.CaptureState();
-			}
 		}
 
 		return snapshot;
@@ -326,39 +298,45 @@ public class CheckpointManager : MonoBehaviour
 		foreach (var id in identities)
 		{
 			var go = id.gameObject;
-			if (!IsSceneInstance(go))
-				continue;
-			if (IsPlayerHierarchy(go))
-				continue;
+			if (!IsSceneInstance(go)) continue;
+			if (IsPlayerHierarchy(go)) continue;
+
 			if (lookup.TryGetValue(id.Id, out var entry))
 			{
-				go.SetActive(entry.active); // restore exact state from snapshot
+				// Found in snapshot: restore exactly as captured.
+				go.SetActive(entry.active);
 				go.transform.position = entry.position;
 				go.transform.rotation = Quaternion.Euler(entry.rotation);
 				go.transform.localScale = entry.scale;
 
-				// Restore component state (rigidbody type, etc.) for boxes.
 				if (entry.componentState != null)
-				{
 					entry.componentState.Apply(go);
-				}
 
-				var restorer = go.GetComponent<ICheckpointRestorer>();
-				restorer?.RestoreToCheckpoint();
+				go.GetComponent<ICheckpointRestorer>()?.RestoreToCheckpoint();
 			}
 			else
 			{
-				if (go.GetComponent<PowerupBehavior>() != null)
-					Debug.LogWarning($"[Checkpoint] RestoreSnapshot({label}): Powerup '{go.name}' NOT FOUND in snapshot entries!");
-				// For the initial-spawn snapshot, avoid deactivating anything we failed to capture.
-				// This prevents scene boxes/powerups from disappearing because the initial capture
-				// happened before their identity state was fully stable.
+				// Not in snapshot. Two cases:
+				//
+				// revision > 0 (checkpoint snapshot): object was created after the checkpoint
+				// was saved, so it shouldn't exist — deactivate it.
+				//
+				// revision == 0 (initial snapshot): object wasn't captured, most likely because
+				// its CheckpointIdentity.Awake() hadn't run yet when the snapshot was taken.
+				// Safe assumption: it's a level-start object and should be active. Re-enable it
+				// and reset internal state rather than silently leaving it in whatever state it
+				// was in when the player died (e.g. collected/inactive).
 				if (snapshot.revision == 0)
-					continue;
-
-				go.SetActive(false);
-				var restorer = go.GetComponent<ICheckpointRestorer>();
-				restorer?.RevertPostCheckpoint();
+				{
+					Debug.LogWarning($"[Checkpoint] '{go.name}' not in initial snapshot (late Awake?) — forcing active and resetting state");
+					go.SetActive(true);
+					go.GetComponent<ICheckpointRestorer>()?.RestoreToCheckpoint();
+				}
+				else
+				{
+					go.SetActive(false);
+					go.GetComponent<ICheckpointRestorer>()?.RevertPostCheckpoint();
+				}
 			}
 		}
 
@@ -369,28 +347,18 @@ public class CheckpointManager : MonoBehaviour
 			{
 				var tracker = playerCtrl.GetComponent<EffectTracker>();
 				if (tracker != null)
-				{
 					tracker.RestoreState(snapshot.playerEffects, playerCtrl.gameObject);
-				}
 			}
 		}
 
 		Debug.Log($"[Checkpoint] Restored world state from {label} snapshot rev {snapshot.revision}");
 	}
 
-	/// <summary>
-	/// Returns true if an object existed at the current checkpoint.
-	/// Used by restore logic to decide which objects should be restored on death.
-	/// </summary>
 	public bool ExistedAtCheckpoint(GameObject obj)
 	{
 		return obj != null && _checkpointActiveObjects.Contains(obj);
 	}
 
-	/// <summary>
-	/// Returns the list of objects that should be restored on death.
-	/// Objects that existed at checkpoint stay as-is; objects created after should restore their checkpoint state.
-	/// </summary>
 	public HashSet<GameObject> GetCheckpointObjects()
 	{
 		return new HashSet<GameObject>(_checkpointActiveObjects);
@@ -415,24 +383,16 @@ public class CheckpointManager : MonoBehaviour
 		public Vector3 position;
 		public Vector3 rotation;
 		public Vector3 scale;
-		// Component state snapshots for boxes, powerups, and other stateful objects
 		public SerializedComponentState componentState;
 	}
 
-	/// <summary>
-	/// Captures the state of modifiable components so they can be fully restored at checkpoint.
-	/// Stores rigidbody type, collider enabled state, and other runtime-modifiable properties.
-	/// </summary>
 	[System.Serializable]
 	public class SerializedComponentState
 	{
-		// Rigidbody2D state
 		public int rbodyType = (int)RigidbodyType2D.Dynamic;
 		public int rbodyConstraints = (int)RigidbodyConstraints2D.FreezeRotation;
 		public float rbodyGravityScale = 0f;
 		public float rbodyLinearDamping = 8f;
-		
-		// Collider state
 		public bool colliderEnabled = true;
 		
 		public SerializedComponentState() { }
@@ -450,9 +410,7 @@ public class CheckpointManager : MonoBehaviour
 			
 			var col = go.GetComponent<Collider2D>();
 			if (col != null)
-			{
 				colliderEnabled = col.enabled;
-			}
 		}
 		
 		public void Apply(GameObject go)
@@ -468,9 +426,7 @@ public class CheckpointManager : MonoBehaviour
 			
 			var col = go.GetComponent<Collider2D>();
 			if (col != null)
-			{
 				col.enabled = colliderEnabled;
-			}
 		}
 	}
 }
