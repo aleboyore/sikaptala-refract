@@ -404,18 +404,19 @@ public class ScriptableBox : MonoBehaviour, ICheckpointRestorer
     public void RestoreToCheckpoint()
     {
         if (rb == null) rb = GetComponent<Rigidbody2D>();
-        
-        // Reset position and state to spawn position
-        gameObject.SetActive(true);
+
+        // The checkpoint restore loop already restored the active state and transform.
+        // Only reset runtime physics and contact bookkeeping here.
         rb.bodyType = RigidbodyType2D.Dynamic;
-        transform.position = spawnPosition;
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         rb.linearVelocity = Vector2.zero;
         restPosition = rb.position;
-        
-        // Clear all contact state
+
+        // Clear all contact and lock state so the box can behave normally after respawn.
         contactSet.Clear();
         effectAppliedSet.Clear();
         effectLockedPlayers.Clear();
+        _lockingPlayers.Clear();
         
         Debug.Log($"[Checkpoint] Box {gameObject.name} restored to spawn state");
     }

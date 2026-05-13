@@ -320,6 +320,8 @@ public class GameManager : MonoBehaviour
 		}
 
 		CheckpointManager.Instance.CaptureInitialSnapshot(_levelOriginalSpawnPoint);
+		CheckpointManager.Instance.SaveCheckpoint(_levelOriginalSpawnPoint);
+		Debug.Log($"[GameManager] Seeded spawn checkpoint at x = {_levelOriginalSpawnPoint.x}, y = {_levelOriginalSpawnPoint.y}");
 	}
 
 	private void LoadFirstLevel()

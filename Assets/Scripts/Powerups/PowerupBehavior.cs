@@ -126,7 +126,6 @@ public class PowerupBehavior : MonoBehaviour, ICheckpointRestorer
     public void RestoreToCheckpoint()
     {
         _consumed = false;
-        gameObject.SetActive(true);
         Debug.Log($"[Checkpoint] Powerup {gameObject.name} restored to available");
     }
 

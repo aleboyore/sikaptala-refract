@@ -44,6 +44,16 @@ public class CheckpointManager : MonoBehaviour
 		return go != null && go.scene.IsValid() && go.scene.isLoaded;
 	}
 
+	private void OnEnable()
+	{
+		_hasInitialSnapshot = false;
+		_initialSnapshot = null;
+		_currentSnapshot = null;
+		CheckpointRevision = 0;
+		PlayerPosition = Vector3.zero;
+		_checkpointActiveObjects.Clear();
+	}
+
 	private void Awake() 
 	{
 		if (Instance == null)
@@ -301,6 +311,12 @@ public class CheckpointManager : MonoBehaviour
 			}
 			else
 			{
+				// For the initial-spawn snapshot, avoid deactivating anything we failed to capture.
+				// This prevents scene boxes/powerups from disappearing because the initial capture
+				// happened before their identity state was fully stable.
+				if (snapshot.revision == 0)
+					continue;
+
 				go.SetActive(false);
 				var restorer = go.GetComponent<ICheckpointRestorer>();
 				restorer?.RevertPostCheckpoint();
